@@ -16,6 +16,13 @@ const Utilsly = {
 
 async function loadPage(url) {
     try {
+        const currentMain = document.querySelector('main');
+        if (currentMain) {
+            currentMain.classList.add('fade-out');
+            // Wait for fade out animation
+            await new Promise(resolve => setTimeout(resolve, 200));
+        }
+
         const response = await fetch(url);
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         const html = await response.text();
@@ -23,12 +30,12 @@ async function loadPage(url) {
         const parser = new DOMParser();
         const doc = parser.parseFromString(html, 'text/html');
         const newMain = doc.querySelector('main');
-        const currentMain = document.querySelector('main');
 
         if (newMain && currentMain) {
             Utilsly.cleanupCurrentTool();
+
+            // Cleanly swap content
             currentMain.innerHTML = newMain.innerHTML;
-            // Also copy classes if needed
             currentMain.className = newMain.className;
 
             // Update Title
@@ -39,10 +46,14 @@ async function loadPage(url) {
 
             Utilsly.initCurrentTool();
 
+            // Transition in
+            currentMain.classList.remove('fade-out');
+            currentMain.classList.add('fade-in');
+            setTimeout(() => currentMain.classList.remove('fade-in'), 200);
+
             // Scroll to top
             window.scrollTo(0, 0);
         } else {
-            // Fallback to full page reload if main container not found
             window.location.href = url;
         }
     } catch (error) {
@@ -52,6 +63,7 @@ async function loadPage(url) {
 }
 
 function MapsTo(url) {
+    if (window.location.href === url) return;
     history.pushState(null, '', url);
     loadPage(url);
 }
