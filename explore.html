@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>토론 탐색 | Debable</title>
+    <!-- Preload Font -->
+    <link rel="stylesheet" as="style" crossorigin
+        href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css" />
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <div id="app-header-target"></div>
+
+    <div class="app-container">
+
+        <div id="left-sidebar-target"></div>
+
+        <!-- Main Feed (Center) -->
+        <main class="main-feed">
+            <!-- Enhanced Search Bar -->
+            <div class="search-container">
+                <input type="text" class="search-input" placeholder="관심 있는 토론 주제, 키워드를 검색해보세요">
+                <button class="search-btn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Categories -->
+            <div
+                style="display: flex; gap: 8px; overflow-x: auto; margin-bottom: 24px; padding-bottom: 4px; scrollbar-width: none;">
+                <button
+                    style="padding: 8px 16px; border-radius: 20px; background: var(--text-main); color: white; font-weight: 600; font-size: 14px; white-space: nowrap;">전체</button>
+                <button
+                    style="padding: 8px 16px; border-radius: 20px; border: 1px solid var(--border-color); color: var(--text-sub); font-weight: 500; font-size: 14px; background: white; white-space: nowrap;">모집대기</button>
+                <button
+                    style="padding: 8px 16px; border-radius: 20px; border: 1px solid var(--border-color); color: var(--text-sub); font-weight: 500; font-size: 14px; background: white; white-space: nowrap;">진행중</button>
+                <button
+                    style="padding: 8px 16px; border-radius: 20px; border: 1px solid var(--border-color); color: var(--text-sub); font-weight: 500; font-size: 14px; background: white; white-space: nowrap;">종료됨</button>
+            </div>
+
+            <h2 style="font-size: 18px; font-weight: 800; margin-bottom: 16px;">탐색 결과</h2>
+
+            <!-- Feed Item 1 -->
+            <div class="feed-item" onclick="location.href='view.html'">
+                <div class="feed-header">
+                    <span class="status-badge live">LIVE</span>
+                    <span>• 정치/사회</span>
+                    <span>• 1:1 토론</span>
+                </div>
+                <h3 class="feed-title">촉법소년 연령 하향, 범죄 예방에 실효성이 있는가?</h3>
+                <p class="feed-desc">
+                    단순 처벌 강화는 근본 대책이 아니라는 의견과 보호가 오히려 범죄를 양산한다는 의견의 대립. 현재 2라운드 교차 검증 시간입니다.
+                </p>
+                <div class="feed-footer">
+                    <span style="color: var(--primary); font-weight: 600;">찬성 측 발언 중</span>
+                    <span>판정단 투표 64% 진행</span>
+                </div>
+            </div>
+
+            <!-- Feed Item 2 -->
+            <div class="feed-item" onclick="location.href='view.html'">
+                <div class="feed-header">
+                    <span class="status-badge pro">모집중</span>
+                    <span>• IT/기술</span>
+                </div>
+                <h3 class="feed-title">생성형 AI의 창작물 저작권, 인정해야 하는가?</h3>
+                <div class="feed-footer">
+                    <span>반대 측 패널 모집 (2/3)</span>
+                    <span>대기자 45명</span>
+                </div>
+            </div>
+
+            <!-- Feed Item 3 -->
+            <div class="feed-item" onclick="location.href='view.html'">
+                <div class="feed-header">
+                    <span class="status-badge">자유토론</span>
+                    <span>• 연애/결혼</span>
+                </div>
+                <h3 class="feed-title">장거리 연애(롱디), 성공할 수 있다 vs 없다</h3>
+                <div class="feed-footer">
+                    <span style="font-weight: 600; color: #DC2626;">반대 우세 (72%)</span>
+                    <span>댓글 1,204개</span>
+                </div>
+            </div>
+
+        </main>
+
+        <!-- Right Widgets -->
+        <aside class="right-sidebar">
+            <section class="widget">
+                <div class="widget-header">
+                    <h3 class="widget-title">인기 키워드</h3>
+                </div>
+                <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                    <span
+                        style="padding: 6px 12px; border-radius: 4px; background: var(--bg-surface); font-size: 13px; color: var(--text-sub);">#촉법소년</span>
+                    <span
+                        style="padding: 6px 12px; border-radius: 4px; background: var(--bg-surface); font-size: 13px; color: var(--text-sub);">#AI저작권</span>
+                    <span
+                        style="padding: 6px 12px; border-radius: 4px; background: var(--bg-surface); font-size: 13px; color: var(--text-sub);">#민트초코</span>
+                    <span
+                        style="padding: 6px 12px; border-radius: 4px; background: var(--bg-surface); font-size: 13px; color: var(--text-sub);">#주4일제</span>
+                </div>
+            </section>
+        </aside>
+
+    </div>
+
+    <div id="mobile-nav-target"></div>
+
+    <script src="js/layout.js"></script>
+</body>
+
+</html>

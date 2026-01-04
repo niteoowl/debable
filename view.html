@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>토론룸 | Debable</title>
+    <link rel="stylesheet" as="style" crossorigin
+        href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css" />
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* View Specific Overrides for Arena Feel */
+        .arena-header {
+            margin-bottom: 24px;
+        }
+
+        .arena-badge-row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .timer-display {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--primary);
+            letter-spacing: 2px;
+            margin-bottom: 24px;
+        }
+
+        .control-panel {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            margin-bottom: 24px;
+        }
+
+        .chat-input-area {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="app-header-target"></div>
+
+    <div class="app-container">
+
+        <!-- Left Sidebar: Info (Overrides default sidebar for this page, or we can use shared + custom content. For now, let's keep it specific as it's a "Exit" button and Info) -->
+        <!-- Actually, user complained about bottom nav changing. Let's use the shared layout for consistency, but maybe we can inject specific sidebar content IF we make layout.js flexible. 
+             However, for now, let's use the shared mobile nav target to fix the bottom nav issue. The sidebar issue is less critical as desktop users might want to exit easily. 
+             If we use shared sidebar, we lose the debate info. 
+             Let's KEEP the custom sidebar for desktop (as it has Debate Info), but USE shared Mobile Nav for consistency. -->
+        <aside class="left-sidebar">
+            <a href="index.html" class="nav-item">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 12H5"></path>
+                    <polyline points="12 19 5 12 12 5"></polyline>
+                </svg>
+                나가기 (홈으로)
+            </a>
+
+            <div style="margin-top: 32px;">
+                <h3
+                    style="font-size: 13px; font-weight: 700; color: var(--text-light); text-transform: uppercase; margin-bottom: 12px;">
+                    Debate Info</h3>
+                <div style="font-size: 14px; margin-bottom: 16px;">
+                    <div style="color: var(--text-sub); margin-bottom: 4px;">형식</div>
+                    <div style="font-weight: 600;">1:1 맞짱 토론</div>
+                </div>
+                <div style="font-size: 14px; margin-bottom: 16px;">
+                    <div style="color: var(--text-sub); margin-bottom: 4px;">라운드</div>
+                    <div style="font-weight: 600;">2 / 5 Round</div>
+                </div>
+                <div style="font-size: 14px; margin-bottom: 16px;">
+                    <div style="color: var(--text-sub); margin-bottom: 4px;">사회자</div>
+                    <div style="font-weight: 600;">Social_Mod</div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Center: Arena -->
+        <main class="main-feed">
+
+            <div class="arena-header">
+                <div class="arena-badge-row">
+                    <span class="status-badge live">LIVE</span>
+                    <span class="status-badge">정치/사회</span>
+                </div>
+                <h1 style="font-size: 28px; font-weight: 800; line-height: 1.3; margin-bottom: 12px;">촉법소년 연령 하향, 범죄 예방에
+                    실효성이 있는가?</h1>
+            </div>
+
+            <!-- Dashboard -->
+            <div class="control-panel">
+                <div style="display: flex; justify-content: space-between; align-items: flex-end;">
+                    <div>
+                        <span
+                            style="font-size: 12px; font-weight: 700; color: #DC2626; display: block; margin-bottom: 4px;">CURRENT
+                            TURN</span>
+                        <span style="font-size: 18px; font-weight: 700;">반대 측 (방어)</span>
+                    </div>
+                    <div class="timer-display">
+                        04:23
+                    </div>
+                </div>
+                <div style="height: 4px; width: 100%; background: #E5E7EB; border-radius: 2px;">
+                    <div style="width: 45%; height: 100%; background: #DC2626;"></div>
+                </div>
+            </div>
+
+            <!-- Feed -->
+            <div style="border-left: 2px solid var(--border-color); padding-left: 24px; margin-left: 10px;">
+
+                <div style="margin-bottom: 32px; position: relative;">
+                    <div
+                        style="position: absolute; left: -29px; top: 0; width: 10px; height: 10px; border-radius: 50%; background: var(--border-color); border: 2px solid white;">
+                    </div>
+                    <span style="font-size: 12px; color: var(--text-light);">System • 14:00</span>
+                    <div style="margin-top: 4px; font-weight: 600;">토론이 시작되었습니다.</div>
+                </div>
+
+                <div style="margin-bottom: 32px; position: relative;">
+                    <div
+                        style="position: absolute; left: -29px; top: 0; width: 10px; height: 10px; border-radius: 50%; background: var(--primary); border: 2px solid white;">
+                    </div>
+                    <span style="font-size: 12px; color: var(--text-light);">찬성 (WorkerHolic) • 14:05</span>
+                    <div
+                        style="margin-top: 8px; padding: 16px; background: #F0F9FF; border-left: 3px solid var(--primary); border-radius: 4px;">
+                        <p style="font-size: 15px; line-height: 1.6;">
+                            최근 5년간 촉법소년 범죄율이 30% 증가했습니다. 이는 현행법이 범죄를 억제하지 못한다는 증거입니다. 처벌 연령을 낮추어 강력한 경고 메시지를 주어야 합니다.
+                        </p>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 32px; position: relative;">
+                    <div
+                        style="position: absolute; left: -29px; top: 0; width: 10px; height: 10px; border-radius: 50%; background: #DC2626; border: 2px solid white;">
+                    </div>
+                    <span style="font-size: 12px; color: var(--text-light);">반대 (LawStudent) • 14:12</span>
+                    <div
+                        style="margin-top: 8px; padding: 16px; background: #FEF2F2; border-left: 3px solid #DC2626; border-radius: 4px;">
+                        <p style="font-size: 15px; line-height: 1.6;">
+                            통계의 착시입니다. 신고율이 높아진 것이지 실제 범죄가 흉악해졌다는 근거는 부족합니다. 낙인 효과로 인해 오히려 재범률만 높일 수 있습니다. 교화 시스템 개선이
+                            먼저입니다.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Input (Observer) -->
+            <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--border-color);">
+                <span style="font-size: 13px; font-weight: 600; color: var(--text-sub);">참관인 의견 남기기 (발언권 없음)</span>
+                <div class="chat-input-area">
+                    <input type="text" placeholder="의견을 입력하세요..."
+                        style="flex: 1; padding: 10px; border: 1px solid var(--border-color); border-radius: 4px;">
+                    <button class="btn btn-primary" style="padding: 0 20px;">전송</button>
+                </div>
+            </div>
+
+        </main>
+
+        <!-- Right: Audience Controls -->
+        <aside class="right-sidebar">
+
+            <!-- Vote Widget -->
+            <section class="widget" style="background: var(--bg-surface); padding: 16px; border-radius: 8px;">
+                <h3 class="widget-title">실시간 청중 투표</h3>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 13px;">
+                    <span style="color: var(--primary);">찬성 45%</span>
+                    <span style="color: #DC2626;">반대 55%</span>
+                </div>
+                <div
+                    style="height: 8px; width: 100%; background: #E5E7EB; border-radius: 4px; overflow: hidden; display: flex;">
+                    <div style="width: 45%; background: var(--primary);"></div>
+                    <div style="width: 55%; background: #DC2626;"></div>
+                </div>
+                <div style="display: flex; gap: 8px; margin-top: 16px;">
+                    <button class="btn btn-outline"
+                        style="flex: 1; border-color: var(--primary); color: var(--primary);">찬성 투표</button>
+                    <button class="btn btn-outline" style="flex: 1; border-color: #DC2626; color: #DC2626;">반대
+                        투표</button>
+                </div>
+            </section>
+
+            <section class="widget">
+                <h3 class="widget-title">접속 중인 패널</h3>
+                <div class="widget-item">
+                    <div
+                        style="width: 32px; height: 32px; border-radius: 50%; background: var(--primary); opacity: 0.2;">
+                    </div>
+                    <div style="flex: 1;">
+                        <span class="widget-text">WorkerHolic</span>
+                        <span class="widget-meta" style="color: var(--primary);">찬성 측 (발언 완료)</span>
+                    </div>
+                </div>
+                <div class="widget-item">
+                    <div style="width: 32px; height: 32px; border-radius: 50%; background: #DC2626; opacity: 0.2;">
+                    </div>
+                    <div style="flex: 1;">
+                        <span class="widget-text">LawStudent</span>
+                        <span class="widget-meta" style="color: #DC2626;">반대 측 (발언 중)</span>
+                    </div>
+                </div>
+            </section>
+
+        </aside>
+
+    </div>
+
+    <!-- Mobile Nav Target -->
+    <div id="mobile-nav-target"></div>
+
+    <script src="js/spa.js"></script>
+    <script src="js/layout.js"></script>
+</body>
+
+</html>

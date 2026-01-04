@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debable</title>
+    <!-- Preload Font -->
+    <link rel="stylesheet" as="style" crossorigin
+        href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css" />
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <div id="app-header-target"></div>
+
+    <div class="app-container">
+
+        <div id="left-sidebar-target"></div>
+
+        <!-- Main Feed (Center) -->
+        <main class="main-feed">
+
+            <!-- Category Toggle -->
+            <div class="category-toggle">
+                <button class="toggle-btn active" onclick="switchFeed('politics')">정치/시사</button>
+                <button class="toggle-btn" onclick="switchFeed('daily')">일상/잡담</button>
+            </div>
+
+            <!-- Politics Feed (Visible by default) -->
+            <div id="feed-politics">
+                <h2 style="font-size: 18px; font-weight: 800; margin-bottom: 16px;">🔥 실시간 핫 토론 (정치)</h2>
+
+                <!-- Live Horizontal Scroll -->
+                <div class="h-scroll-section">
+                    <!-- Card 1 -->
+                    <div class="h-card" onclick="location.href='view.html'">
+                        <div style="margin-bottom: 8px;">
+                            <span class="status-badge live">LIVE</span>
+                            <span style="font-size: 12px; color: var(--text-light); margin-left: 4px;">• 정치/사회</span>
+                        </div>
+                        <h3 class="h-card-title">촉법소년 연령 하향, 실효성이 있는가?</h3>
+                        <div style="font-size: 13px; color: var(--text-sub); margin-bottom: 12px;">
+                            현재 2라운드 교차 검증 중<br>
+                            찬성 측 발언 시간
+                        </div>
+                        <div
+                            style="display: flex; align-items: center; justify-content: space-between; font-size: 12px; color: var(--text-light);">
+                            <span>👤 1.4k명 참관</span>
+                            <span style="color: #DC2626; font-weight: 600;">투표 64%</span>
+                        </div>
+                    </div>
+
+                    <!-- Card 2 -->
+                    <div class="h-card" onclick="location.href='view.html'">
+                        <div style="margin-bottom: 8px;">
+                            <span class="status-badge live">LIVE</span>
+                            <span style="font-size: 12px; color: var(--text-light); margin-left: 4px;">• IT/기술</span>
+                        </div>
+                        <h3 class="h-card-title">AI 개발 속도, 규제가 필요한가?</h3>
+                        <div style="font-size: 13px; color: var(--text-sub); margin-bottom: 12px;">
+                            최종 변론 진행 중<br>
+                            청중 질의응답 예정
+                        </div>
+                        <div
+                            style="display: flex; align-items: center; justify-content: space-between; font-size: 12px; color: var(--text-light);">
+                            <span>👤 890명 참관</span>
+                            <span style="color: var(--primary); font-weight: 600;">투표 41%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <h2 style="font-size: 18px; font-weight: 800; margin: 32px 0 16px;">추천 토론</h2>
+
+                <!-- Feed Item 2 -->
+                <div class="feed-item" onclick="location.href='view.html'">
+                    <div class="feed-header">
+                        <span class="status-badge pro">모집중</span>
+                        <span>• IT/기술</span>
+                        <span>• 팀 토론</span>
+                    </div>
+                    <h3 class="feed-title">생성형 AI의 창작물 저작권, 인정해야 하는가?</h3>
+                    <p class="feed-desc">
+                        AI가 학습한 데이터의 저작권 문제와 새로운 창작 주체로서의 인정 여부. 반대 측 패널 1명 급구합니다. (법학 전공자 우대)
+                    </p>
+                    <div class="feed-footer">
+                        <span>반대 측 패널 모집 (2/3)</span>
+                        <span>대기자 45명</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Daily Feed (Hidden by default) -->
+            <div id="feed-daily" style="display: none;">
+                <h2 style="font-size: 18px; font-weight: 800; margin-bottom: 16px;">💬 실시간 가벼운 토론</h2>
+
+                <div class="h-scroll-section">
+                    <!-- Card 3 -->
+                    <div class="h-card" onclick="location.href='view.html'">
+                        <div style="margin-bottom: 8px;">
+                            <span class="status-badge live">LIVE</span>
+                            <span style="font-size: 12px; color: var(--text-light); margin-left: 4px;">• 연예</span>
+                        </div>
+                        <h3 class="h-card-title">아이돌 연애, 팬 기만인가 사생활인가?</h3>
+                        <div style="font-size: 13px; color: var(--text-sub); margin-bottom: 12px;">
+                            1라운드 입론 진행 중<br>
+                            뜨거운 공방 예상
+                        </div>
+                        <div
+                            style="display: flex; align-items: center; justify-content: space-between; font-size: 12px; color: var(--text-light);">
+                            <span>👤 3.2k명 참관</span>
+                            <span style="color: #DC2626; font-weight: 600;">투표 88%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <h2 style="font-size: 18px; font-weight: 800; margin: 32px 0 16px;">🔥 핫한 주제</h2>
+
+                <!-- Feed Item 3 -->
+                <div class="feed-item" onclick="location.href='view.html'">
+                    <div class="feed-header">
+                        <span class="status-badge">자유토론</span>
+                        <span>• 연애/결혼</span>
+                    </div>
+                    <h3 class="feed-title">장거리 연애(롱디), 성공할 수 있다 vs 없다</h3>
+                    <p class="feed-desc">
+                        몸이 멀어지면 마음도 멀어진다? 기술의 발전으로 극복 가능하다? 경험자들의 치열한 공방전.
+                    </p>
+                    <div class="feed-footer">
+                        <span style="font-weight: 600; color: #DC2626;">반대 우세 (72%)</span>
+                        <span>댓글 1,204개</span>
+                    </div>
+                </div>
+
+                <!-- Feed Item 4 -->
+                <div class="feed-item" onclick="location.href='view.html'">
+                    <div class="feed-header">
+                        <span class="status-badge" style="background: #F3F4F6;">종료</span>
+                        <span>• 라이프스타일</span>
+                    </div>
+                    <h3 class="feed-title">민트초코, 호불호를 넘어선 맛의 영역인가?</h3>
+                    <div class="feed-footer">
+                        <span>최종 결과: 반대 승리</span>
+                        <span>조회수 45,200회</span>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+
+        <!-- Right Widgets -->
+        <aside class="right-sidebar">
+            <!-- News Widget -->
+            <section class="widget">
+                <div class="widget-header">
+                    <h3 class="widget-title">관련 뉴스 브리핑</h3>
+                    <span class="widget-link">더보기</span>
+                </div>
+                <div class="widget-item">
+                    <div style="flex: 1;">
+                        <span class="widget-text"
+                            style="white-space: normal; line-height: 1.4; margin-bottom: 4px; display: block;">법무부, 촉법소년
+                            상한 연령 13세로 하향 추진</span>
+                        <span class="widget-meta">연합뉴스 • 2시간 전</span>
+                    </div>
+                    <div style="width: 60px; height: 60px; background: #E5E7EB; border-radius: 4px;"></div>
+                </div>
+                <div class="widget-item">
+                    <div style="flex: 1;">
+                        <span class="widget-text"
+                            style="white-space: normal; line-height: 1.4; margin-bottom: 4px; display: block;">EU, 세계 최초
+                            AI 규제법 통과... 저작권 명시 의무화</span>
+                        <span class="widget-meta">ZDNet • 5시간 전</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Ranking Widget -->
+            <section class="widget">
+                <div class="widget-header">
+                    <h3 class="widget-title">주간 베스트 논객</h3>
+                </div>
+                <div class="widget-item">
+                    <div class="widget-rank">1</div>
+                    <div style="flex: 1;">
+                        <span class="widget-text" style="font-weight: 600;">LogicKing</span>
+                        <span class="widget-meta">승률 84% • 14회 우승</span>
+                    </div>
+                </div>
+                <div class="widget-item">
+                    <div class="widget-rank">2</div>
+                    <div style="flex: 1;">
+                        <span class="widget-text" style="font-weight: 600;">FactCheck_Kr</span>
+                        <span class="widget-meta">승률 79% • 팩트폭격기</span>
+                    </div>
+                </div>
+                <div class="widget-item">
+                    <div class="widget-rank">3</div>
+                    <div style="flex: 1;">
+                        <span class="widget-text" style="font-weight: 600;">Debater_01</span>
+                        <span class="widget-meta">승률 72% • 신예</span>
+                    </div>
+                </div>
+            </section>
+        </aside>
+
+    </div>
+
+    <div id="mobile-nav-target"></div>
+
+    <script src="js/layout.js"></script>
+    <!-- Clean Layout JS (Just for link active logic if needed, but manual is fine for this demo) -->
+    <script>
+        // Use js/layout.js which is included at the end
+        function switchFeed(type) {
+            const politicsFeed = document.getElementById('feed-politics');
+            const dailyFeed = document.getElementById('feed-daily');
+            const btns = document.querySelectorAll('.toggle-btn');
+
+            if (type === 'politics') {
+                politicsFeed.style.display = 'block';
+                dailyFeed.style.display = 'none';
+                btns[0].classList.add('active');
+                btns[1].classList.remove('active');
+            } else {
+                politicsFeed.style.display = 'none';
+                dailyFeed.style.display = 'block';
+                btns[0].classList.remove('active');
+                btns[1].classList.add('active');
+            }
+        }
+    </script>
+</body>
+
+</html>
