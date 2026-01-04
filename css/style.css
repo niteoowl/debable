@@ -56,9 +56,7 @@ body {
     top: 0;
     left: 0;
     width: 100%;
-    background: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    background: #ffffff;
     z-index: 1000;
     display: flex;
     align-items: center;
@@ -451,21 +449,6 @@ body {
 .mobile-nav-item svg {
     width: 24px;
     height: 24px;
-}
-
-/* Page Transition Styles */
-.main-feed {
-    transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
-}
-
-.main-feed.fade-out {
-    opacity: 0;
-    transform: translateY(10px);
-}
-
-.main-feed.fade-in {
-    opacity: 1;
-    transform: translateY(0);
 }
 
 /* Responsive */
