@@ -14,60 +14,52 @@ const Utilsly = {
     }
 };
 
-// Map of pages to index for directional sliding
-const PAGE_INDEX = {
-    'index.html': 1,
-    '/': 1,
-    'explore.html': 2,
-    'community.html': 3,
-    'my.html': 4,
-    // Sub-pages like 'view.html', 'create.html', 'room.html' usually push to a stack, 
-    // but for simple linearity let's treat them as 'next' or specific high index
-    'create.html': 10,
-    'view.html': 10,
-    'room.html': 10
+// Navigation Order for Slide Logic
+const NAV_ORDER = {
+    'index.html': 0,
+    '/': 0,
+    'explore.html': 1,
+    'community.html': 2,
+    'my.html': 3
 };
 
-function getPageIndex(url) {
-    // Extract filename or path
-    let pathname = new URL(url, window.location.origin).pathname;
-    if (pathname.startsWith('/')) pathname = pathname.substring(1);
-    if (pathname === '') return 1; // root
-    return PAGE_INDEX[pathname] || 5; // Default middle/high if unknown
+function getNavIndex(url) {
+    const page = url.split('/').pop() || 'index.html';
+    return NAV_ORDER[page] !== undefined ? NAV_ORDER[page] : -1; // -1 for non-nav pages like view/room
 }
 
 async function loadPage(url) {
     try {
         const currentMain = document.querySelector('main');
-        const nextUrl = new URL(url, window.location.origin).href;
+        const isMobile = window.innerWidth <= 768;
 
         // Determine Direction
-        const currIdx = getPageIndex(window.location.href);
-        const nextIdx = getPageIndex(nextUrl);
+        let slideClassOut = 'fade-out';
+        let slideClassIn = 'fade-in';
 
-        let exitClass = '';
-        let enterClass = '';
+        if (isMobile) {
+            const currentUrl = window.location.pathname;
+            const currentIndex = getNavIndex(currentUrl);
+            const nextIndex = getNavIndex(url);
 
-        if (currentMain && window.innerWidth <= 768) {
-            if (nextIdx > currIdx) {
-                // Forward: 1 -> 2 (Slide Left)
-                exitClass = 'slide-left-exit';
-                enterClass = 'slide-left-enter';
-            } else if (nextIdx < currIdx) {
-                // Backward: 2 -> 1 (Slide Right)
-                exitClass = 'slide-right-exit';
-                enterClass = 'slide-right-enter';
-            } else {
-                // Same level or unknown - maybe just fade or no animation
-                // Let's default to forward for sub-pages if equal? Or none.
-                // If equal, no animation
+            // Only slide if moving between main nav items
+            if (currentIndex !== -1 && nextIndex !== -1) {
+                if (nextIndex > currentIndex) {
+                    // Moving Right (Next) -> Slide Out Left, Slide In from Right
+                    slideClassOut = 'slide-out-left';
+                    slideClassIn = 'slide-in-right';
+                } else if (nextIndex < currentIndex) {
+                    // Moving Left (Prev) -> Slide Out Right, Slide In from Left
+                    slideClassOut = 'slide-out-right';
+                    slideClassIn = 'slide-in-left';
+                }
             }
+        }
 
-            if (exitClass) {
-                currentMain.classList.add(exitClass);
-                // Wait for animation
-                await new Promise(resolve => setTimeout(resolve, 300));
-            }
+        if (currentMain) {
+            currentMain.classList.add(slideClassOut);
+            // Wait for animation
+            await new Promise(resolve => setTimeout(resolve, 250));
         }
 
         const response = await fetch(url);
@@ -81,9 +73,9 @@ async function loadPage(url) {
         if (newMain && currentMain) {
             Utilsly.cleanupCurrentTool();
 
-            // Swap
+            // Cleanly swap content
             currentMain.innerHTML = newMain.innerHTML;
-            currentMain.className = newMain.className; // Reset classes
+            currentMain.className = newMain.className; // Maintain original classes
 
             // Update Title
             document.title = doc.title;
@@ -93,14 +85,20 @@ async function loadPage(url) {
 
             Utilsly.initCurrentTool();
 
-            // Transition In
-            if (window.innerWidth <= 768 && enterClass) {
-                currentMain.classList.add(enterClass);
-                setTimeout(() => currentMain.classList.remove(enterClass), 300);
-            }
+            // Clean classes and Trigger In-Animation
+            currentMain.classList.remove('fade-out', 'slide-out-left', 'slide-out-right');
 
-            // On PC or if no animation, just swap. The browser handles it fast.
+            // Force reflow
+            void currentMain.offsetWidth;
 
+            currentMain.classList.add(slideClassIn);
+
+            // Remove animation class after completion
+            setTimeout(() => {
+                currentMain.classList.remove('fade-in', 'slide-in-right', 'slide-in-left');
+            }, 300);
+
+            // Scroll to top
             window.scrollTo(0, 0);
         } else {
             window.location.href = url;
