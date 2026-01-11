@@ -9,11 +9,24 @@ function getPageIndex(url) {
 
 let currentPageIndex = getPageIndex(window.location.pathname);
 
-// Icons (active/inactive pairs)
+const Utilsly = {
+    initCurrentTool: () => {
+        // Page-specific initialization
+    },
+    cleanupCurrentTool: () => {
+        // Cleanup before page change
+    }
+};
+
+function isMobile() {
+    return window.innerWidth <= 768;
+}
+
+// Icon SVGs - Active and Inactive states
 const ICONS = {
     home: {
-        inactive: `<svg viewBox="0 0 576 512" fill="currentColor"><path d="M570.24 247.41L512 199.52V104a8 8 0 0 0-8-8h-32a8 8 0 0 0-8 8v55.52l-137.6-115.93c-22.06-18.59-54.19-18.59-76.25 0L5.76 247.41a8 8 0 0 0-1.23 11.25l16.96 20.95a8 8 0 0 0 11.25 1.23L64 256.18V464a16 16 0 0 0 16 16h416a16 16 0 0 0 16-16V256.18l31.26 24.66a8 8 0 0 0 11.25-1.23l16.96-20.95a8 8 0 0 0-1.23-11.25zM464 448H112V219.52L288 72.41l176 147.11z"/></svg>`,
-        active: `<svg viewBox="0 0 576 512" fill="currentColor"><path d="M570.24 247.41L512 199.52V104a8 8 0 0 0-8-8h-32a8 8 0 0 0-8 8v55.52l-137.6-115.93c-22.06-18.59-54.19-18.59-76.25 0L5.76 247.41a8 8 0 0 0-1.23 11.25l16.96 20.95a8 8 0 0 0 11.25 1.23L64 256.18V464a16 16 0 0 0 16 16h416a16 16 0 0 0 16-16V256.18l31.26 24.66a8 8 0 0 0 11.25-1.23l16.96-20.95a8 8 0 0 0-1.23-11.25zM288 377.6c-35.35 0-64-28.65-64-64 0-35.35 28.65-64 64-64s64 28.65 64 64c0 35.35-28.65 64-64 64z"/></svg>`
+        inactive: `<svg viewBox="0 0 576 512" fill="currentColor"><path d="M541.1 241.4c10.6 8.8 12.1 24.3 3.3 34.9s-24.3 12.1-34.9 3.3L480 254.1V432c0 44.2-35.8 80-80 80H176c-44.2 0-80-35.8-80-80V254.1L66.5 279.6c-10.6 8.8-26.1 7.3-34.9-3.3s-7.3-26.1 3.3-34.9l224-186.6c9.5-7.9 23.1-7.9 32.6 0l224 186.6zM144 432c0 17.7 14.3 32 32 32H208V384c0-44.2 35.8-80 80-80s80 35.8 80 80v80h32c17.7 0 32-14.3 32-32V206.7L288 91.6 144 206.7V432zm176 32V384c0-17.7-14.3-32-32-32s-32 14.3-32 32v80h64z"/></svg>`,
+        active: `<svg viewBox="0 0 576 512" fill="currentColor"><path d="M298.6 41.4c-9.5-7.9-23.1-7.9-32.6 0l-224 186.6c-10.6 8.8-12.1 24.3-3.3 34.9s24.3 12.1 34.9 3.3L96 246.5V432c0 44.2 35.8 80 80 80h224c44.2 0 80-35.8 80-80V246.5l22.5 19.7c10.6 8.8 26.1 7.3 34.9-3.3s7.3-26.1-3.3-34.9l-224-186.6zM368 432H208V384c0-44.2 35.8-80 80-80s80 35.8 80 80v48z"/></svg>`
     },
     explore: {
         inactive: `<svg viewBox="0 0 640 640" fill="currentColor"><path d="M528 320C528 205.1 434.9 112 320 112C205.1 112 112 205.1 112 320C112 434.9 205.1 528 320 528C434.9 528 528 434.9 528 320zM64 320C64 178.6 178.6 64 320 64C461.4 64 576 178.6 576 320C576 461.4 461.4 576 320 576C178.6 576 64 461.4 64 320zM370.7 389.1L226.4 444.6C207 452.1 187.9 433 195.4 413.6L250.9 269.3C254.2 260.8 260.8 254.2 269.3 250.9L413.6 195.4C433 187.9 452.1 207 444.6 226.4L389.1 370.7C385.8 379.2 379.2 385.8 370.7 389.1zM352 320C352 302.3 337.7 288 320 288C302.3 288 288 302.3 288 320C288 337.7 302.3 352 320 352C337.7 352 352 337.7 352 320z"/></svg>`,
@@ -29,134 +42,13 @@ const ICONS = {
     }
 };
 
-// Right sidebar content per page
-const SIDEBAR_CONTENT = {
-    'index.html': `
-        <section class="widget">
-            <div class="widget-header">
-                <h3 class="widget-title">관련 뉴스 브리핑</h3>
-                <span class="widget-link">더보기</span>
-            </div>
-            <div class="widget-item">
-                <div style="flex: 1;">
-                    <span class="widget-text" style="white-space: normal; line-height: 1.4; margin-bottom: 4px; display: block;">법무부, 촉법소년 상한 연령 13세로 하향 추진</span>
-                    <span class="widget-meta">연합뉴스 • 2시간 전</span>
-                </div>
-            </div>
-            <div class="widget-item">
-                <div style="flex: 1;">
-                    <span class="widget-text" style="white-space: normal; line-height: 1.4; margin-bottom: 4px; display: block;">EU, 세계 최초 AI 규제법 통과... 저작권 명시 의무화</span>
-                    <span class="widget-meta">ZDNet • 5시간 전</span>
-                </div>
-            </div>
-        </section>
-        <section class="widget">
-            <div class="widget-header">
-                <h3 class="widget-title">주간 베스트 논객</h3>
-            </div>
-            <div class="widget-item">
-                <div class="widget-rank">1</div>
-                <div style="flex: 1;">
-                    <span class="widget-text" style="font-weight: 600;">LogicKing</span>
-                    <span class="widget-meta">승률 84% • 14회 우승</span>
-                </div>
-            </div>
-            <div class="widget-item">
-                <div class="widget-rank">2</div>
-                <div style="flex: 1;">
-                    <span class="widget-text" style="font-weight: 600;">FactCheck_Kr</span>
-                    <span class="widget-meta">승률 79% • 팩트폭격기</span>
-                </div>
-            </div>
-            <div class="widget-item">
-                <div class="widget-rank">3</div>
-                <div style="flex: 1;">
-                    <span class="widget-text" style="font-weight: 600;">Debater_01</span>
-                    <span class="widget-meta">승률 72% • 신예</span>
-                </div>
-            </div>
-        </section>
-    `,
-    'explore.html': `
-        <section class="widget">
-            <div class="widget-header">
-                <h3 class="widget-title">인기 검색어</h3>
-            </div>
-            <div class="widget-item"><div class="widget-rank">1</div><span class="widget-text">촉법소년</span></div>
-            <div class="widget-item"><div class="widget-rank">2</div><span class="widget-text">AI 저작권</span></div>
-            <div class="widget-item"><div class="widget-rank">3</div><span class="widget-text">민트초코</span></div>
-            <div class="widget-item"><div class="widget-rank">4</div><span class="widget-text">아이돌 연애</span></div>
-            <div class="widget-item"><div class="widget-rank">5</div><span class="widget-text">롱디</span></div>
-        </section>
-    `,
-    'community.html': `
-        <section class="widget">
-            <div class="widget-header">
-                <h3 class="widget-title">활발한 토론방</h3>
-            </div>
-            <div class="widget-item"><span class="widget-text">🔥 자유토론 게시판</span></div>
-            <div class="widget-item"><span class="widget-text">💬 질문과 답변</span></div>
-            <div class="widget-item"><span class="widget-text">📢 공지사항</span></div>
-        </section>
-    `,
-    'my.html': `
-        <section class="widget">
-            <div class="widget-header">
-                <h3 class="widget-title">나의 활동</h3>
-            </div>
-            <div class="widget-item" style="cursor: default;"><span class="widget-text">참여 토론: 12개</span></div>
-            <div class="widget-item" style="cursor: default;"><span class="widget-text">승률: 67%</span></div>
-            <div class="widget-item" style="cursor: default;"><span class="widget-text">받은 좋아요: 234</span></div>
-        </section>
-    `,
-    'create.html': `
-        <section class="widget">
-            <h3 class="widget-title">개설 가이드</h3>
-            <div class="widget-item" style="cursor: default;">
-                <div class="widget-rank">1</div>
-                <div class="widget-text" style="white-space: normal;">주제는 구체적일수록 좋습니다.</div>
-            </div>
-            <div class="widget-item" style="cursor: default;">
-                <div class="widget-rank">2</div>
-                <div class="widget-text" style="white-space: normal;">배경 설명을 충분히 작성하세요.</div>
-            </div>
-            <div class="widget-item" style="cursor: default;">
-                <div class="widget-rank">3</div>
-                <div class="widget-text" style="white-space: normal;">토론 형식을 신중히 선택하세요.</div>
-            </div>
-        </section>
-    `
-};
-
-const Utilsly = {
-    initCurrentTool: () => {
-        // Page-specific initialization
-    },
-    cleanupCurrentTool: () => {
-        // Cleanup before page change
-    }
-};
-
-function isMobile() {
-    return window.innerWidth <= 768;
-}
-
-function updateRightSidebar(pageName) {
-    const sidebar = document.querySelector('.right-sidebar');
-    if (sidebar && SIDEBAR_CONTENT[pageName]) {
-        sidebar.innerHTML = SIDEBAR_CONTENT[pageName];
-    }
-}
-
 async function loadPage(url, direction = 0) {
     try {
         const currentMain = document.querySelector('main');
-        if (currentMain) {
-            if (isMobile() && direction !== 0) {
-                const exitClass = direction > 0 ? 'slide-out-left' : 'slide-out-right';
-                currentMain.classList.add(exitClass);
-                await new Promise(resolve => setTimeout(resolve, 150));
-            }
+        if (currentMain && isMobile() && direction !== 0) {
+            const exitClass = direction > 0 ? 'slide-out-left' : 'slide-out-right';
+            currentMain.classList.add(exitClass);
+            await new Promise(resolve => setTimeout(resolve, 150));
         }
 
         const response = await fetch(url);
@@ -175,9 +67,15 @@ async function loadPage(url, direction = 0) {
 
             document.title = doc.title;
 
-            const pageName = url.split('/').pop() || 'index.html';
+            // Update navigation active states with proper icons
             updateNavActiveStates(url);
-            updateRightSidebar(pageName);
+
+            // Update right sidebar content from new page
+            const newRightSidebar = doc.querySelector('.right-sidebar');
+            const currentRightSidebar = document.querySelector('.right-sidebar');
+            if (newRightSidebar && currentRightSidebar) {
+                currentRightSidebar.innerHTML = newRightSidebar.innerHTML;
+            }
 
             Utilsly.initCurrentTool();
 
@@ -215,8 +113,9 @@ function updateNavActiveStates(url) {
     // Update desktop nav
     document.querySelectorAll('.nav-item').forEach(item => {
         const href = item.getAttribute('href');
-        const iconKey = href.replace('.html', '');
+        const iconKey = getIconKey(href);
         const isActive = href === page;
+
         item.classList.toggle('active', isActive);
         const svgContainer = item.querySelector('.nav-icon');
         if (svgContainer && ICONS[iconKey]) {
@@ -227,14 +126,23 @@ function updateNavActiveStates(url) {
     // Update mobile nav
     document.querySelectorAll('.mobile-nav-item').forEach(item => {
         const href = item.getAttribute('href');
-        const iconKey = href.replace('.html', '');
+        const iconKey = getIconKey(href);
         const isActive = href === page;
+
         item.classList.toggle('active', isActive);
         const svgContainer = item.querySelector('.mobile-nav-icon');
         if (svgContainer && ICONS[iconKey]) {
             svgContainer.innerHTML = isActive ? ICONS[iconKey].active : ICONS[iconKey].inactive;
         }
     });
+}
+
+function getIconKey(href) {
+    if (href.includes('index')) return 'home';
+    if (href.includes('explore')) return 'explore';
+    if (href.includes('community')) return 'community';
+    if (href.includes('my')) return 'my';
+    return 'home';
 }
 
 window.addEventListener('popstate', (e) => {
@@ -278,6 +186,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const path = window.location.pathname;
     const page = path.split('/').pop() || 'index.html';
 
+    // Inject font
     if (!document.querySelector('link[href*="pretendard"]')) {
         const fontLink = document.createElement('link');
         fontLink.rel = 'stylesheet';
@@ -313,6 +222,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const isActive = (target) => page === target;
 
         sidebarTarget.innerHTML = `
+            <div class="left-sidebar-placeholder"></div>
             <nav class="left-sidebar">
                 <a href="index.html" class="nav-item ${isActive('index.html') ? 'active' : ''}">
                     <span class="nav-icon">${isActive('index.html') ? ICONS.home.active : ICONS.home.inactive}</span>
@@ -360,9 +270,6 @@ document.addEventListener('DOMContentLoaded', () => {
             </nav>
         `;
     }
-
-    // Set initial right sidebar content
-    updateRightSidebar(page);
 
     Utilsly.initCurrentTool();
 });

@@ -9,339 +9,6 @@
         href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css" />
     <link rel="stylesheet" href="css/reset.css">
     <link rel="stylesheet" href="css/style.css">
-    <style>
-        .create-header {
-            margin-bottom: 24px;
-        }
-
-        .create-title {
-            font-size: 26px;
-            font-weight: 800;
-            margin-bottom: 8px;
-        }
-
-        .create-subtitle {
-            font-size: 14px;
-            color: var(--text-sub);
-        }
-
-        /* Steps Progress */
-        .steps-progress {
-            display: flex;
-            margin-bottom: 32px;
-            position: relative;
-        }
-
-        .step {
-            flex: 1;
-            text-align: center;
-            position: relative;
-        }
-
-        .step-number {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background: var(--bg-surface);
-            color: var(--text-light);
-            font-weight: 700;
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 8px;
-            transition: all 0.2s;
-        }
-
-        .step.active .step-number {
-            background: var(--text-main);
-            color: white;
-        }
-
-        .step.done .step-number {
-            background: #10B981;
-            color: white;
-        }
-
-        .step-label {
-            font-size: 12px;
-            color: var(--text-light);
-            font-weight: 500;
-        }
-
-        .step.active .step-label {
-            color: var(--text-main);
-            font-weight: 600;
-        }
-
-        .step-line {
-            position: absolute;
-            top: 16px;
-            left: calc(50% + 20px);
-            right: calc(-50% + 20px);
-            height: 2px;
-            background: var(--border-color);
-        }
-
-        .step:last-child .step-line {
-            display: none;
-        }
-
-        /* Form Section */
-        .form-section {
-            margin-bottom: 28px;
-        }
-
-        .form-label {
-            display: block;
-            font-size: 14px;
-            font-weight: 700;
-            margin-bottom: 8px;
-            color: var(--text-main);
-        }
-
-        .form-label .required {
-            color: #EF4444;
-            margin-left: 2px;
-        }
-
-        .form-input,
-        .form-textarea,
-        .form-select {
-            width: 100%;
-            padding: 14px 16px;
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-md);
-            font-size: 15px;
-            background: white;
-            transition: border-color 0.2s, box-shadow 0.2s;
-        }
-
-        .form-input:focus,
-        .form-textarea:focus,
-        .form-select:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-        }
-
-        .form-textarea {
-            resize: vertical;
-            min-height: 120px;
-        }
-
-        .form-helper {
-            font-size: 12px;
-            color: var(--text-light);
-            margin-top: 8px;
-        }
-
-        .char-count {
-            text-align: right;
-            font-size: 12px;
-            color: var(--text-light);
-            margin-top: 4px;
-        }
-
-        /* Option Grid */
-        .option-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
-        }
-
-        .option-card {
-            border: 2px solid var(--border-color);
-            border-radius: var(--radius-md);
-            padding: 20px 16px;
-            cursor: pointer;
-            text-align: center;
-            transition: all 0.15s;
-            background: white;
-        }
-
-        .option-card:hover {
-            border-color: var(--text-light);
-        }
-
-        .option-card.selected {
-            border-color: var(--primary);
-            background: var(--primary-bg);
-        }
-
-        .option-card.selected .option-title {
-            color: var(--primary);
-        }
-
-        .option-icon {
-            font-size: 28px;
-            margin-bottom: 8px;
-        }
-
-        .option-title {
-            font-size: 16px;
-            font-weight: 700;
-            margin-bottom: 4px;
-            transition: color 0.15s;
-        }
-
-        .option-desc {
-            font-size: 12px;
-            color: var(--text-light);
-        }
-
-        /* Category Tags */
-        .category-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-
-        .category-tag {
-            padding: 8px 16px;
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
-            font-size: 13px;
-            cursor: pointer;
-            transition: all 0.15s;
-            background: white;
-        }
-
-        .category-tag:hover {
-            border-color: var(--text-light);
-        }
-
-        .category-tag.selected {
-            background: var(--text-main);
-            color: white;
-            border-color: var(--text-main);
-        }
-
-        /* Toggle Switch */
-        .toggle-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 16px 0;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .toggle-info h4 {
-            font-size: 14px;
-            font-weight: 600;
-            margin-bottom: 2px;
-        }
-
-        .toggle-info p {
-            font-size: 12px;
-            color: var(--text-light);
-        }
-
-        .toggle-switch {
-            width: 48px;
-            height: 28px;
-            background: var(--border-color);
-            border-radius: 14px;
-            position: relative;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-
-        .toggle-switch.active {
-            background: var(--primary);
-        }
-
-        .toggle-switch::after {
-            content: '';
-            position: absolute;
-            width: 22px;
-            height: 22px;
-            background: white;
-            border-radius: 50%;
-            top: 3px;
-            left: 3px;
-            transition: transform 0.2s;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-        }
-
-        .toggle-switch.active::after {
-            transform: translateX(20px);
-        }
-
-        /* Buttons */
-        .btn-row {
-            display: flex;
-            gap: 12px;
-            margin-top: 32px;
-        }
-
-        .btn {
-            flex: 1;
-            padding: 16px;
-            border-radius: var(--radius-md);
-            font-size: 15px;
-            font-weight: 700;
-            cursor: pointer;
-            border: none;
-            transition: all 0.15s;
-        }
-
-        .btn:active {
-            transform: scale(0.98);
-        }
-
-        .btn-secondary {
-            background: var(--bg-surface);
-            color: var(--text-sub);
-        }
-
-        .btn-primary {
-            background: var(--text-main);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: #000;
-        }
-
-        /* Summary Preview */
-        .summary-card {
-            background: var(--bg-surface);
-            border-radius: var(--radius-md);
-            padding: 20px;
-            margin-bottom: 24px;
-        }
-
-        .summary-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 8px 0;
-            font-size: 14px;
-        }
-
-        .summary-label {
-            color: var(--text-light);
-        }
-
-        .summary-value {
-            font-weight: 600;
-            color: var(--text-main);
-        }
-
-        @media (max-width: 768px) {
-            .option-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .create-title {
-                font-size: 22px;
-            }
-
-            .btn-row {
-                flex-direction: column;
-            }
-        }
-    </style>
 </head>
 
 <body>
@@ -353,180 +20,148 @@
         <div id="left-sidebar-target"></div>
 
         <main class="main-feed">
-            <!-- Header -->
-            <div class="create-header">
-                <h1 class="create-title">새 토론 개설하기</h1>
-                <p class="create-subtitle">당신의 주제로 토론을 시작하세요. 다양한 의견을 모아보세요.</p>
-            </div>
-
-            <!-- Steps Progress -->
-            <div class="steps-progress">
-                <div class="step active" data-step="1">
-                    <div class="step-number">1</div>
-                    <div class="step-label">주제 설정</div>
-                    <div class="step-line"></div>
-                </div>
-                <div class="step" data-step="2">
-                    <div class="step-number">2</div>
-                    <div class="step-label">규칙 설정</div>
-                    <div class="step-line"></div>
-                </div>
-                <div class="step" data-step="3">
-                    <div class="step-number">3</div>
-                    <div class="step-label">완료</div>
-                </div>
+            <!-- Progress Steps -->
+            <div class="create-steps">
+                <div class="create-step active" data-step="1">1. 주제 설정</div>
+                <div class="create-step" data-step="2">2. 규칙 설정</div>
+                <div class="create-step" data-step="3">3. 완료</div>
             </div>
 
             <!-- Step 1: Topic -->
             <div id="step-1" class="step-content">
                 <div class="form-section">
-                    <label class="form-label">토론 주제 <span class="required">*</span></label>
-                    <input type="text" id="topic-input" class="form-input" placeholder="논쟁하고 싶은 주제를 명확하게 입력하세요"
-                        maxlength="100">
-                    <div class="char-count"><span id="topic-count">0</span>/100</div>
-                    <p class="form-helper">예: "촉법소년 연령 하향, 필요한가?"</p>
+                    <label class="form-label">토론 주제 <span style="color: #EF4444">*</span></label>
+                    <input type="text" id="topic-input" class="form-input" placeholder="논쟁하고 싶은 주제를 명확하게 입력해주세요.">
+                    <p class="form-helper">예: 촉법소년 연령 하향, 필요한가?</p>
                 </div>
 
                 <div class="form-section">
-                    <label class="form-label">상세 배경</label>
-                    <textarea id="desc-input" class="form-textarea"
-                        placeholder="토론의 배경이나 주요 쟁점을 설명해주세요. 관련 링크나 자료를 첨부하면 더 좋습니다." maxlength="500"></textarea>
-                    <div class="char-count"><span id="desc-count">0</span>/500</div>
-                </div>
-
-                <div class="form-section">
-                    <label class="form-label">카테고리 <span class="required">*</span></label>
-                    <div class="category-tags">
-                        <span class="category-tag" data-category="politics">정치/사회</span>
-                        <span class="category-tag" data-category="tech">IT/기술</span>
-                        <span class="category-tag" data-category="economy">경제/금융</span>
-                        <span class="category-tag" data-category="culture">문화/예술</span>
-                        <span class="category-tag" data-category="life">라이프스타일</span>
-                        <span class="category-tag" data-category="entertainment">연예/스포츠</span>
-                        <span class="category-tag" data-category="other">기타</span>
+                    <label class="form-label">카테고리 <span style="color: #EF4444">*</span></label>
+                    <div class="option-grid" id="category-grid">
+                        <div class="option-card" data-value="정치/사회">
+                            <div class="option-title">🏛️ 정치/사회</div>
+                        </div>
+                        <div class="option-card" data-value="IT/기술">
+                            <div class="option-title">💻 IT/기술</div>
+                        </div>
+                        <div class="option-card" data-value="경제">
+                            <div class="option-title">💰 경제</div>
+                        </div>
+                        <div class="option-card" data-value="문화/연예">
+                            <div class="option-title">🎬 문화/연예</div>
+                        </div>
+                        <div class="option-card" data-value="라이프">
+                            <div class="option-title">☕ 라이프</div>
+                        </div>
+                        <div class="option-card" data-value="스포츠">
+                            <div class="option-title">⚽ 스포츠</div>
+                        </div>
                     </div>
                 </div>
 
                 <div class="form-section">
-                    <label class="form-label">토론 형식 <span class="required">*</span></label>
-                    <div class="option-grid">
-                        <div class="option-card selected" data-format="1v1">
-                            <div class="option-icon">⚔️</div>
+                    <label class="form-label">상세 배경 (선택)</label>
+                    <textarea id="background-input" class="form-textarea" rows="4"
+                        placeholder="토론의 배경이나 주요 쟁점을 설명해주세요. 링크나 자료를 첨부하면 더 좋습니다."></textarea>
+                </div>
+
+                <button class="btn-primary" onclick="goToStep(2)" id="next-btn-1" disabled>다음 단계로</button>
+            </div>
+
+            <!-- Step 2: Rules -->
+            <div id="step-2" class="step-content" style="display: none;">
+                <div class="form-section">
+                    <label class="form-label">토론 형식 <span style="color: #EF4444">*</span></label>
+                    <div class="option-grid" id="format-grid">
+                        <div class="option-card selected" data-value="1:1">
                             <div class="option-title">1 : 1</div>
                             <div class="option-desc">맞짱 토론</div>
                         </div>
-                        <div class="option-card" data-format="3v3">
-                            <div class="option-icon">👥</div>
+                        <div class="option-card" data-value="3:3">
                             <div class="option-title">3 : 3</div>
                             <div class="option-desc">팀 토론</div>
                         </div>
-                        <div class="option-card" data-format="free">
-                            <div class="option-icon">💬</div>
+                        <div class="option-card" data-value="자유">
                             <div class="option-title">자유</div>
                             <div class="option-desc">인원 제한 없음</div>
                         </div>
                     </div>
                 </div>
 
-                <div class="btn-row">
-                    <button class="btn btn-primary" onclick="goToStep(2)">다음 단계로</button>
-                </div>
-            </div>
-
-            <!-- Step 2: Rules -->
-            <div id="step-2" class="step-content" style="display: none;">
                 <div class="form-section">
                     <label class="form-label">라운드 수</label>
-                    <div class="option-grid">
-                        <div class="option-card" data-rounds="1">
-                            <div class="option-title">1 라운드</div>
-                            <div class="option-desc">간단하게</div>
+                    <div class="option-grid" id="round-grid">
+                        <div class="option-card" data-value="2">
+                            <div class="option-title">2 라운드</div>
+                            <div class="option-desc">약 20분</div>
                         </div>
-                        <div class="option-card selected" data-rounds="3">
+                        <div class="option-card selected" data-value="3">
                             <div class="option-title">3 라운드</div>
-                            <div class="option-desc">권장</div>
+                            <div class="option-desc">약 30분</div>
                         </div>
-                        <div class="option-card" data-rounds="5">
+                        <div class="option-card" data-value="5">
                             <div class="option-title">5 라운드</div>
-                            <div class="option-desc">심층 토론</div>
+                            <div class="option-desc">약 50분</div>
                         </div>
                     </div>
                 </div>
 
                 <div class="form-section">
-                    <label class="form-label">발언 시간 제한</label>
-                    <select class="form-select" id="time-limit">
+                    <label class="form-label">발언 시간 (분)</label>
+                    <select class="form-select" id="time-select">
                         <option value="3">3분</option>
                         <option value="5" selected>5분</option>
+                        <option value="7">7분</option>
                         <option value="10">10분</option>
-                        <option value="0">제한 없음</option>
                     </select>
                 </div>
 
                 <div class="form-section">
-                    <label class="form-label">추가 설정</label>
-                    <div class="toggle-row">
-                        <div class="toggle-info">
-                            <h4>청중 투표 허용</h4>
-                            <p>관전자가 실시간으로 투표할 수 있습니다</p>
+                    <label class="form-label">내 입장 <span style="color: #EF4444">*</span></label>
+                    <div class="option-grid" style="grid-template-columns: 1fr 1fr;" id="stance-grid">
+                        <div class="option-card selected" data-value="찬성" style="border-color: #2563EB;">
+                            <div class="option-title" style="color: #2563EB;">👍 찬성</div>
+                            <div class="option-desc">이 주제에 찬성합니다</div>
                         </div>
-                        <div class="toggle-switch active" data-toggle="vote"></div>
-                    </div>
-                    <div class="toggle-row">
-                        <div class="toggle-info">
-                            <h4>청중 댓글 허용</h4>
-                            <p>관전자가 의견을 남길 수 있습니다</p>
+                        <div class="option-card" data-value="반대">
+                            <div class="option-title" style="color: #DC2626;">👎 반대</div>
+                            <div class="option-desc">이 주제에 반대합니다</div>
                         </div>
-                        <div class="toggle-switch active" data-toggle="comment"></div>
-                    </div>
-                    <div class="toggle-row">
-                        <div class="toggle-info">
-                            <h4>비공개 토론</h4>
-                            <p>초대된 사람만 참여할 수 있습니다</p>
-                        </div>
-                        <div class="toggle-switch" data-toggle="private"></div>
                     </div>
                 </div>
 
-                <div class="btn-row">
-                    <button class="btn btn-secondary" onclick="goToStep(1)">이전</button>
-                    <button class="btn btn-primary" onclick="goToStep(3)">미리보기</button>
+                <div style="display: flex; gap: 12px;">
+                    <button class="btn-primary" style="background: var(--bg-surface); color: var(--text-sub);"
+                        onclick="goToStep(1)">이전</button>
+                    <button class="btn-primary" onclick="goToStep(3)">토론 개설하기</button>
                 </div>
             </div>
 
-            <!-- Step 3: Preview -->
+            <!-- Step 3: Complete -->
             <div id="step-3" class="step-content" style="display: none;">
-                <div class="summary-card">
-                    <h3 style="font-size: 16px; font-weight: 700; margin-bottom: 16px;">📋 토론 요약</h3>
-                    <div class="summary-row">
-                        <span class="summary-label">주제</span>
-                        <span class="summary-value" id="summary-topic">-</span>
-                    </div>
-                    <div class="summary-row">
-                        <span class="summary-label">카테고리</span>
-                        <span class="summary-value" id="summary-category">-</span>
-                    </div>
-                    <div class="summary-row">
-                        <span class="summary-label">형식</span>
-                        <span class="summary-value" id="summary-format">-</span>
-                    </div>
-                    <div class="summary-row">
-                        <span class="summary-label">라운드</span>
-                        <span class="summary-value" id="summary-rounds">-</span>
-                    </div>
-                    <div class="summary-row">
-                        <span class="summary-label">발언 시간</span>
-                        <span class="summary-value" id="summary-time">-</span>
-                    </div>
-                </div>
+                <div style="text-align: center; padding: 60px 20px;">
+                    <div style="font-size: 64px; margin-bottom: 24px;">🎉</div>
+                    <h2 style="font-size: 24px; font-weight: 800; margin-bottom: 12px;">토론이 개설되었습니다!</h2>
+                    <p style="color: var(--text-sub); margin-bottom: 32px; line-height: 1.6;">
+                        상대 패널이 참가하면 알림을 보내드릴게요.<br>
+                        지금 바로 토론 내용을 공유해보세요.
+                    </p>
 
-                <p style="font-size: 14px; color: var(--text-sub); text-align: center; margin-bottom: 24px;">
-                    토론을 개설하면 즉시 참가자 모집이 시작됩니다.
-                </p>
+                    <div
+                        style="background: var(--bg-surface); border-radius: 12px; padding: 20px; margin-bottom: 24px; text-align: left;">
+                        <div style="font-size: 12px; color: var(--text-light); margin-bottom: 8px;">개설된 토론</div>
+                        <div style="font-size: 18px; font-weight: 700;" id="created-topic">-</div>
+                        <div style="font-size: 14px; color: var(--text-sub); margin-top: 8px;">
+                            <span id="created-format">1:1</span> • <span id="created-rounds">3라운드</span> • <span
+                                id="created-stance">찬성</span>
+                        </div>
+                    </div>
 
-                <div class="btn-row">
-                    <button class="btn btn-secondary" onclick="goToStep(2)">수정하기</button>
-                    <button class="btn btn-primary" onclick="submitDebate()">🎉 토론 개설하기</button>
+                    <div style="display: flex; gap: 12px;">
+                        <button class="btn-primary" style="background: var(--bg-surface); color: var(--text-sub);"
+                            onclick="MapsTo('index.html')">홈으로</button>
+                        <button class="btn-primary" onclick="shareDebate()">🔗 공유하기</button>
+                    </div>
                 </div>
             </div>
 
@@ -537,15 +172,29 @@
                 <h3 class="widget-title">💡 개설 가이드</h3>
                 <div class="widget-item" style="cursor: default;">
                     <div class="widget-rank">1</div>
-                    <div class="widget-text" style="white-space: normal;">주제는 구체적일수록 참여율이 높습니다.</div>
+                    <div class="widget-text" style="white-space: normal;">주제는 구체적일수록 좋습니다. "AI"보다는 "수업 중 AI 사용 금지"가
+                        좋습니다.</div>
                 </div>
                 <div class="widget-item" style="cursor: default;">
                     <div class="widget-rank">2</div>
-                    <div class="widget-text" style="white-space: normal;">배경 설명에 관련 기사나 자료를 첨부하세요.</div>
+                    <div class="widget-text" style="white-space: normal;">배경 설명에 관련 기사나 데이터를 첨부하면 더 활발한 토론이 됩니다.</div>
                 </div>
                 <div class="widget-item" style="cursor: default;">
                     <div class="widget-rank">3</div>
-                    <div class="widget-text" style="white-space: normal;">3라운드 형식이 가장 균형 잡힌 토론을 만듭니다.</div>
+                    <div class="widget-text" style="white-space: normal;">첫 토론이라면 3라운드, 5분 발언을 추천드려요.</div>
+                </div>
+            </section>
+
+            <section class="widget">
+                <h3 class="widget-title">📊 이번 주 인기 주제</h3>
+                <div class="widget-item" style="cursor: default;">
+                    <div class="widget-text" style="white-space: normal;">1. AI 저작권 인정 여부</div>
+                </div>
+                <div class="widget-item" style="cursor: default;">
+                    <div class="widget-text" style="white-space: normal;">2. 반려동물 보험 의무화</div>
+                </div>
+                <div class="widget-item" style="cursor: default;">
+                    <div class="widget-text" style="white-space: normal;">3. 주 4일제 도입</div>
                 </div>
             </section>
         </aside>
@@ -556,66 +205,102 @@
 
     <script src="js/layout.js"></script>
     <script>
-        // Character count
-        document.getElementById('topic-input').addEventListener('input', (e) => {
-            document.getElementById('topic-count').textContent = e.target.value.length;
-        });
+        // Form state
+        let formData = {
+            topic: '',
+            category: '',
+            background: '',
+            format: '1:1',
+            rounds: '3',
+            time: '5',
+            stance: '찬성'
+        };
 
-        document.getElementById('desc-input').addEventListener('input', (e) => {
-            document.getElementById('desc-count').textContent = e.target.value.length;
-        });
-
-        // Option card selection
-        document.querySelectorAll('.option-card').forEach(card => {
-            card.addEventListener('click', function () {
-                this.parentNode.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
-                this.classList.add('selected');
+        // Option grid selection logic
+        function setupOptionGrid(gridId, key) {
+            concument.getElementById(gridId);
+            if (!grid) return;
+            
+            grid.querySelectorAll('.option-card').forEach(card => {
+                card.addEventListener('click', function() {
+                    grid.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
+                    this.classList.add('selected');
+                    formData[key] = this.dataset.value;
+                    validateStep1();
+                });
             });
-        });
+        }
 
-        // Category tag selection
-        document.querySelectorAll('.category-tag').forEach(tag => {
-            tag.addEventListener('click', function () {
-                document.querySelectorAll('.category-tag').forEach(t => t.classList.remove('selected'));
-                this.classList.add('selected');
-            });
-        });
-
-        // Toggle switch
-        document.querySelectorAll('.toggle-switch').forEach(toggle => {
-            toggle.addEventListener('click', function () {
-                this.classList.toggle('active');
-            });
-        });
-
-        // Step navigation
-        function goToStep(step) {
-            document.querySelectorAll('.step-content').forEach(el => el.style.display = 'none');
-            document.getElementById('step-' + step).style.display = 'block';
-
-            document.querySelectorAll('.step').forEach((el, idx) => {
-                el.classList.remove('active', 'done');
-                if (idx + 1 < step) el.classList.add('done');
-                if (idx + 1 === step) el.classList.add('active');
-            });
-
-            // Update summary on step 3
-            if (step === 3) {
-                document.getElementById('summary-topic').textContent = document.getElementById('topic-input').value || '-';
-                document.getElementById('summary-category').textContent = document.querySelector('.category-tag.selected')?.textContent || '-';
-                document.getElementById('summary-format').textContent = document.querySelector('.option-card.selected[data-format]')?.querySelector('.option-title')?.textContent || '-';
-                document.getElementById('summary-rounds').textContent = document.querySelector('.option-card.selected[data-rounds]')?.querySelector('.option-title')?.textContent || '-';
-                const timeVal = document.getElementById('time-limit').value;
-                document.getElementById('summary-time').textContent = timeVal === '0' ? '제한 없음' : timeVal + '분';
+        // Validate step 1
+        function v alidateStep1() {
+            const topic = document.getElementById('topic-input').value.trim();
+            const category = formData.category;
+            const btn = document.getElementById('next-btn-1');
+            
+            if (topic.length >= 5 && category) {
+                btn.disabled = false;
+            } else {
+                b tn.disabled = true;
             }
+            
+            formData.topic = topic;
+        }
+
+        // Go to step
+        function goToStep(step) {
+            // Validate before moving
+            if (step === 2) {
+                formData.background = document.getElementById('background-input').value;
+            }
+            
+             if (step === 3) {
+                formData.time = document.getElementById('time-select').value;
+                // Show completion
+                document.getElementById('created-topic').textContent = formData.topic;
+                document.getElementById('created-format').textContent = formData.format;
+                document.getElementById('created-rounds').textContent = formData.rounds + '라운드';
+                document.getElementById('created-stance').textContent = formData.stance;
+            }
+
+            // Hide all steps
+            document.querySelectorAll('.step-content').forEach(el => el.style.display = 'none');
+            
+            // Show current step
+            document.getElementById('step-' + step).style.display = 'block';
+            
+            // Update step indicators
+            document.querySelectorAll('.create-step').forEach(el => {
+                const s = parseInt(el.dataset.step);
+                el.classList.remove('active', 'completed');
+                if (s < step) el.classList.add('completed');
+                if (s === step) el.classList.add('active');
+            });
 
             window.scrollTo(0, 0);
         }
 
-        function submitDebate() {
-            alert('🎉 토론이 개설되었습니다!\n(데모 버전입니다)');
-            MapsTo('index.html');
+        // Share debate
+        function shareDebate() {
+            if (navigator.share) {
+                navigator.share({
+                    title: formData.topic + ' - Debable',
+                    text: '토론에 참여해주세요!',
+                    url: window.location.origin + '/view.html'
+                });
+            } else {
+                navigator.clipboard.writeText(window.location.origin + '/view.html');
+                alert('링크가 복사되었습니다!');
+            }
         }
+
+        // Iniize  document.addEventListener('DOMContentLoaded', () => {
+            setupOptionGrid('category-grid', 'category');
+            setupOptionGrid('format-grid', 'format');
+            setupOptionGrid('round-grid', 'rounds');
+            setupOptionGrid('stance-grid', 'stance');
+
+            document.getElementById('topic-input').addEventListener('input', validateStep1);
+        });
     </script>
 </body>
 
