@@ -3,128 +3,191 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>토론 참여 (채팅) | Debable</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>토론 참여실 | Debable</title>
+    <!-- Preload Font -->
     <link rel="stylesheet" as="style" crossorigin
         href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css" />
     <link rel="stylesheet" href="css/reset.css">
     <link rel="stylesheet" href="css/style.css">
     <style>
+        /* Room Specific - Chat Interface */
         body {
             background-color: #F9FAFB;
-            /* Light bg for chat room focus */
-            padding-bottom: 0;
-            overflow: hidden;
-            /* App-like fixed viewport */
             height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            /* Prevent body scroll, handle inside containers */
         }
 
         .app-header,
         .mobile-nav {
             display: none !important;
+            /* Fullscreen immersion */
         }
 
-        .chat-room-layout {
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-        }
-
+        /* Top Bar */
         .room-header {
+            height: 56px;
             background: white;
-            padding: 12px 16px;
             border-bottom: 1px solid var(--border-color);
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
-            padding-top: max(12px, env(safe-area-inset-top));
+            justify-content: space-between;
+            padding: 0 16px;
+            flex-shrink: 0;
+            z-index: 20;
         }
 
-        .room-msgs {
+        .timer-box {
+            background: #FEE2E2;
+            color: #DC2626;
+            font-weight: 700;
+            font-size: 14px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .exit-btn {
+            color: var(--text-sub);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            padding: 8px;
+        }
+
+        /* Chat Area */
+        .room-chat-area {
             flex: 1;
             overflow-y: auto;
             padding: 16px;
+            padding-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
             background: #F9FAFB;
+            -webkit-overflow-scrolling: touch;
         }
 
-        .input-area {
-            background: white;
-            padding: 12px 16px;
-            border-top: 1px solid var(--border-color);
-            padding-bottom: max(12px, env(safe-area-inset-bottom));
+        .chat-row {
+            display: flex;
+            gap: 12px;
+            max-width: 100%;
         }
 
-        .turn-indicator {
-            background: #EFF6FF;
-            color: #1D4ED8;
-            padding: 8px 12px;
-            font-size: 13px;
-            font-weight: 600;
-            text-align: center;
-            border-bottom: 1px solid #DBEAFE;
+        .chat-row.me {
+            flex-direction: row-reverse;
+        }
+
+        .avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #E5E7EB;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .msg-content {
+            display: flex;
+            flex-direction: column;
+            max-width: 80%;
+            gap: 4px;
+        }
+
+        .chat-row.me .msg-content {
+            align-items: flex-end;
+        }
+
+        .sender-name {
+            font-size: 12px;
+            color: var(--text-light);
+            margin-left: 4px;
+        }
+
+        .chat-row.me .sender-name {
+            margin-right: 4px;
+            text-align: right;
         }
 
         .bubble {
-            max-width: 80%;
-            padding: 10px 14px;
-            border-radius: 12px;
-            font-size: 15px;
-            line-height: 1.5;
-            margin-bottom: 12px;
-            word-break: break-word;
-        }
-
-        .bubble.me {
-            background: var(--text-main);
-            color: white;
-            align-self: flex-end;
-            margin-left: auto;
-            border-bottom-right-radius: 2px;
-        }
-
-        .bubble.them {
+            padding: 12px 16px;
+            border-radius: 16px;
+            border-top-left-radius: 2px;
             background: white;
             border: 1px solid var(--border-color);
+            font-size: 15px;
+            line-height: 1.5;
             color: var(--text-main);
-            align-self: flex-start;
-            margin-right: auto;
-            border-top-left-radius: 2px;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
         }
 
-        .msg-meta {
+        .chat-row.me .bubble {
+            border-radius: 16px;
+            border-top-right-radius: 2px;
+            background: var(--primary);
+            color: white;
+            border: none;
+        }
+
+        /* Opponent bubble style if needed different */
+        .chat-row.opponent .bubble {
+            border-left: 3px solid #EF4444;
+            /* Specific color for opponent team */
+        }
+
+        /* Input Area */
+        .input-dock {
+            background: white;
+            border-top: 1px solid var(--border-color);
+            padding: 12px 16px;
+            padding-bottom: calc(12px + env(safe-area-inset-bottom));
+            flex-shrink: 0;
+            z-index: 20;
+        }
+
+        .typing-indicator {
             font-size: 11px;
-            opacity: 0.7;
-            margin-bottom: 2px;
-            display: block;
+            color: var(--text-light);
+            margin-bottom: 8px;
+            height: 14px;
+            /* prevent layout jump */
         }
 
-        .chat-input-wrapper {
+        .input-box-wrapper {
             display: flex;
             gap: 8px;
             align-items: flex-end;
+            background: #F3F4F6;
+            padding: 8px;
+            border-radius: 24px;
         }
 
         .chat-input {
             flex: 1;
-            background: #F3F4F6;
+            background: transparent;
             border: none;
-            border-radius: 20px;
-            padding: 12px 16px;
+            padding: 8px;
             font-size: 15px;
             max-height: 100px;
             resize: none;
+            font-family: inherit;
         }
 
         .chat-input:focus {
-            outline: 2px solid var(--primary);
-            background: white;
+            outline: none;
         }
 
         .send-btn {
-            width: 40px;
-            height: 40px;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
             background: var(--primary);
             color: white;
@@ -137,67 +200,111 @@
         }
 
         .send-btn:active {
-            transform: scale(0.95);
+            transform: scale(0.9);
         }
 
-        .typing-indicator {
+        /* System/Mod msg */
+        .system-msg {
+            align-self: center;
+            background: rgba(0, 0, 0, 0.05);
+            padding: 4px 12px;
+            border-radius: 12px;
             font-size: 12px;
             color: var(--text-light);
-            font-style: italic;
-            margin-bottom: 8px;
+            margin: 8px 0;
+        }
+
+        @media (max-width: 768px) {
+            .input-dock {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+            }
+
+            .room-chat-area {
+                padding-bottom: 80px;
+                /* Space for fixed input */
+            }
         }
     </style>
 </head>
 
 <body>
 
-    <div class="chat-room-layout">
-        <header class="room-header">
-            <button onclick="location.href='view.html'"
-                style="border: none; background: none; font-size: 24px;">←</button>
-            <div style="text-align: center;">
-                <h2 style="font-size: 14px; font-weight: 700;">촉법소년 연령 하향</h2>
-                <span style="font-size: 11px; color: #DC2626;">남은 시간 03:20</span>
-            </div>
-            <button style="border: none; background: none; font-size: 18px;">ℹ️</button>
-        </header>
+    <div class="room-header">
+        <div style="font-weight: 700;">촉법소년 연령 하향 (반대 측)</div>
+        <div class="timer-box">
+            <span>⏳ 02:24</span>
+        </div>
+        <div class="exit-btn" onclick="location.href='index.html'">나가기</div>
+    </div>
 
-        <div class="turn-indicator">
-            📢 <strong>반대(본인)</strong> 발언 순서입니다. (최대 200자)
+    <div class="room-chat-area" id="chatArea">
+        <div class="system-msg">토론이 시작되었습니다. 매너있는 채팅 부탁드립니다.</div>
+
+        <!-- Opponent Message -->
+        <div class="chat-row opponent">
+            <div class="avatar">👨‍🏫</div>
+            <div class="msg-content">
+                <span class="sender-name">LogicKing (찬성)</span>
+                <div class="bubble">
+                    최근 촉법소년 범죄가 흉포화되고 있습니다. 성인범죄 못지않은 범죄를 저지르고도 처벌받지 않는 현실은 바뀌어야 합니다.
+                </div>
+            </div>
         </div>
 
-        <div class="room-msgs" id="msg-container">
-            <div class="bubble them">
-                <span class="msg-meta">LogicKing (찬성)</span>
-                형사 미성년자 연령을 낮춘다고 해서 아이들이 전과자가 되는 것을 막을 수 있을까요? 오히려 범죄 학습의 기회만 주게 될 것입니다.
+        <!-- My Message -->
+        <div class="chat-row me">
+            <div class="msg-content">
+                <span class="sender-name">나 (반대)</span>
+                <div class="bubble">
+                    하지만 처벌만이 능사는 아닙니다. 소년범의 재범률이 높은 이유는 교화 시스템의 부족 때문입니다.
+                </div>
             </div>
-
-            <div class="bubble me">
-                <span class="msg-meta">나 (반대)</span>
-                하지만 현재의 처벌 수위로는 소년범죄의 잔혹성을 따라가지 못하고 있습니다. 피해자들의 억울함은 어떻게 해결합니까?
-            </div>
-
-            <div class="bubble them">
-                <span class="msg-meta">SeriousUser (찬성)</span>
-                교정 시설의 확충과 교육 프로그램 개선이 먼저입니다. 처벌 강화는 '언발에 오줌누기' 식 처방일 뿐입니다. 재범률 통계가 이를 증명합니다.
-            </div>
-
-            <div class="typing-indicator">LogicKing 님이 입력 중...</div>
         </div>
 
-        <div class="input-area">
-            <div class="chat-input-wrapper">
-                <textarea class="chat-input" rows="1" placeholder="반박 내용을 입력하세요..."></textarea>
-                <button class="send-btn">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <line x1="22" y1="2" x2="11" y2="13"></line>
-                        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-                    </svg>
-                </button>
+        <!-- Team Message -->
+        <div class="chat-row">
+            <div class="avatar">🧑‍💼</div>
+            <div class="msg-content">
+                <span class="sender-name">Debater1 (반대)</span>
+                <div class="bubble">
+                    맞습니다. 낙인 효과로 인해 사회 적응이 어려워지면 오히려 더 강력한 범죄로 이어질 수 있습니다.
+                </div>
             </div>
+        </div>
+
+        <!-- Scrolling spacing -->
+        <div style="height: 10px;"></div>
+    </div>
+
+    <div class="input-dock">
+        <div class="typing-indicator">LogicKing 님이 입력 중...</div>
+        <div class="input-box-wrapper">
+            <textarea class="chat-input" rows="1" placeholder="반론을 입력하세요..."></textarea>
+            <button class="send-btn">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="22" y1="2" x2="11" y2="13"></line>
+                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                </svg>
+            </button>
         </div>
     </div>
 
+    <script>
+        // Auto resize textarea
+        const textarea = document.querySelector('.chat-input');
+        textarea.addEventListener('input', function () {
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight) + 'px';
+            if (this.value === '') this.style.height = 'auto';
+        });
+
+        // Scroll to bottom
+        const chatArea = document.getElementById('chatArea');
+        chatArea.scrollTop = chatArea.scrollHeight;
+    </script>
 </body>
 
 </html>

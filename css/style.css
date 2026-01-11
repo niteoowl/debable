@@ -528,9 +528,10 @@ body {
         font-size: 18px !important;
     }
 
-    /* Ensure content isn't covered by bottom nav */
+    /* Ensure content isn't covered by bottom nav - increased padding */
     .main-feed {
-        padding-bottom: 80px;
+        padding-bottom: 100px;
+        /* Increased from 80px */
         width: 100%;
         overflow-x: hidden;
     }
@@ -540,67 +541,81 @@ body {
     }
 }
 
-/* Animation Handling */
+/* Page Transitions */
+/* PC: No animation */
+main {
+    /* No default transition for PC */
+}
 
-/* Desktop: No Animation */
-@media (min-width: 769px) {
+@media (max-width: 768px) {
+    /* Mobile: Slide Animations */
 
-    main,
-    .app-container {
-        transition: none !important;
-        animation: none !important;
+    /* When navigating forward (e.g. 1 -> 2) */
+    /* Old page goes Left, New page enters from Right */
+    .slide-left-exit {
+        animation: slideToLeft 0.3s ease-in-out forwards;
     }
 
-    .fade-in,
-    .fade-out,
-    .slide-in-right,
-    .slide-in-left {
-        animation: none !important;
-        transition: none !important;
-        transform: none !important;
-        opacity: 1 !important;
+    .slide-left-enter {
+        animation: slideFromRight 0.3s ease-in-out forwards;
+    }
+
+    /* When navigating backward (e.g. 2 -> 1) */
+    /* Old page goes Right, New page enters from Left */
+    .slide-right-exit {
+        animation: slideToRight 0.3s ease-in-out forwards;
+    }
+
+    .slide-right-enter {
+        animation: slideFromLeft 0.3s ease-in-out forwards;
     }
 }
 
-/* Mobile: Slide Animations */
-@media (max-width: 768px) {
-    main {
-        width: 100%;
-        overflow-x: hidden;
+@keyframes slideToLeft {
+    from {
+        transform: translateX(0);
+        opacity: 1;
     }
 
-    /* Keyframes for sliding content IN from Right (Next page) */
-    @keyframes slideInRight {
-        from {
-            transform: translateX(100%);
-            opacity: 0;
-        }
+    to {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+}
 
-        to {
-            transform: translateX(0);
-            opacity: 1;
-        }
+@keyframes slideFromRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
     }
 
-    /* Keyframes for sliding content IN from Left (Prev page) */
-    @keyframes slideInLeft {
-        from {
-            transform: translateX(-100%);
-            opacity: 0;
-        }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
 
-        to {
-            transform: translateX(0);
-            opacity: 1;
-        }
+@keyframes slideToRight {
+    from {
+        transform: translateX(0);
+        opacity: 1;
     }
 
-    .slide-in-right {
-        animation: slideInRight 0.3s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
+@keyframes slideFromLeft {
+    from {
+        transform: translateX(-100%);
+        opacity: 0;
     }
 
-    .slide-in-left {
-        animation: slideInLeft 0.3s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+    to {
+        transform: translateX(0);
+        opacity: 1;
     }
 }
 
@@ -612,7 +627,7 @@ body {
 
     50% {
         opacity: 0.5;
-        transform: scale(1.1);
+        transform: scale(1.2);
     }
 
     100% {

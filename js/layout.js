@@ -14,45 +14,60 @@ const Utilsly = {
     }
 };
 
-const PAGE_INDEX_MAP = {
+// Map of pages to index for directional sliding
+const PAGE_INDEX = {
     'index.html': 1,
+    '/': 1,
     'explore.html': 2,
     'community.html': 3,
-    'my.html': 4
+    'my.html': 4,
+    // Sub-pages like 'view.html', 'create.html', 'room.html' usually push to a stack, 
+    // but for simple linearity let's treat them as 'next' or specific high index
+    'create.html': 10,
+    'view.html': 10,
+    'room.html': 10
 };
 
-// State to track current page index
-let g_currentIndex = 1;
-
 function getPageIndex(url) {
-    // Handle root or simple paths
-    let filename = url.split('/').pop();
-    if (filename === '' || filename === undefined) filename = 'index.html';
-    // Remove query params if any
-    filename = filename.split('?')[0];
-
-    return PAGE_INDEX_MAP[filename] || 99; // 99 for unknown
+    // Extract filename or path
+    let pathname = new URL(url, window.location.origin).pathname;
+    if (pathname.startsWith('/')) pathname = pathname.substring(1);
+    if (pathname === '') return 1; // root
+    return PAGE_INDEX[pathname] || 5; // Default middle/high if unknown
 }
-
-// Initial set
-g_currentIndex = getPageIndex(window.location.pathname);
 
 async function loadPage(url) {
     try {
-        const nextIndex = getPageIndex(url);
-        const direction = nextIndex > g_currentIndex ? 'right' : 'left';
-        // If indices are same (or unknown/mixed), default to fade or none? 
-        // Let's assume right if equal (refresh) or just no anim class diff
-
-        g_currentIndex = nextIndex; // Update for next time
-
         const currentMain = document.querySelector('main');
-        // On desktop, we want no animation, but CSS handles that via media query.
-        // We just toggle classes.
+        const nextUrl = new URL(url, window.location.origin).href;
 
-        if (currentMain) {
-            // No slide-out for now, just slide-in the new content
-            // To be smoother, we might wait for 50ms then swap?
+        // Determine Direction
+        const currIdx = getPageIndex(window.location.href);
+        const nextIdx = getPageIndex(nextUrl);
+
+        let exitClass = '';
+        let enterClass = '';
+
+        if (currentMain && window.innerWidth <= 768) {
+            if (nextIdx > currIdx) {
+                // Forward: 1 -> 2 (Slide Left)
+                exitClass = 'slide-left-exit';
+                enterClass = 'slide-left-enter';
+            } else if (nextIdx < currIdx) {
+                // Backward: 2 -> 1 (Slide Right)
+                exitClass = 'slide-right-exit';
+                enterClass = 'slide-right-enter';
+            } else {
+                // Same level or unknown - maybe just fade or no animation
+                // Let's default to forward for sub-pages if equal? Or none.
+                // If equal, no animation
+            }
+
+            if (exitClass) {
+                currentMain.classList.add(exitClass);
+                // Wait for animation
+                await new Promise(resolve => setTimeout(resolve, 300));
+            }
         }
 
         const response = await fetch(url);
@@ -66,22 +81,9 @@ async function loadPage(url) {
         if (newMain && currentMain) {
             Utilsly.cleanupCurrentTool();
 
-            // Cleanly swap content
+            // Swap
             currentMain.innerHTML = newMain.innerHTML;
-            currentMain.className = newMain.className; // Preserve layout classes
-
-            // Apply Animation Class
-            // remove old anims
-            currentMain.classList.remove('slide-in-right', 'slide-in-left', 'fade-in');
-
-            // Force Reflow
-            void currentMain.offsetWidth;
-
-            if (direction === 'right') {
-                currentMain.classList.add('slide-in-right');
-            } else {
-                currentMain.classList.add('slide-in-left');
-            }
+            currentMain.className = newMain.className; // Reset classes
 
             // Update Title
             document.title = doc.title;
@@ -91,7 +93,14 @@ async function loadPage(url) {
 
             Utilsly.initCurrentTool();
 
-            // Scroll to top
+            // Transition In
+            if (window.innerWidth <= 768 && enterClass) {
+                currentMain.classList.add(enterClass);
+                setTimeout(() => currentMain.classList.remove(enterClass), 300);
+            }
+
+            // On PC or if no animation, just swap. The browser handles it fast.
+
             window.scrollTo(0, 0);
         } else {
             window.location.href = url;
