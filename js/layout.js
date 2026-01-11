@@ -1,65 +1,42 @@
+// Page order for directional navigation (used for mobile slide animations)
+const PAGE_ORDER = ['index.html', 'explore.html', 'community.html', 'my.html'];
+
+function getPageIndex(url) {
+    const page = url.split('/').pop() || 'index.html';
+    const idx = PAGE_ORDER.indexOf(page);
+    return idx === -1 ? 0 : idx;
+}
+
+let currentPageIndex = getPageIndex(window.location.pathname);
+
 const Utilsly = {
     initCurrentTool: () => {
-        console.log('Initializing tool for:', window.location.pathname);
-        // Page-specific initialization logic can go here
-        // For example, if we were on the home page, we might re-bind feed switching
+        // Page-specific initialization logic
         if (window.location.pathname.endsWith('index.html') || window.location.pathname === '/') {
             if (typeof switchFeed === 'function') {
-                // switchFeed is defined globally in index.html, usually we'd move it to a JS file
+                // switchFeed is defined globally in index.html
             }
         }
     },
     cleanupCurrentTool: () => {
-        console.log('Cleaning up current tool...');
+        // Cleanup before page change
     }
 };
 
-// Navigation Order for Slide Logic
-const NAV_ORDER = {
-    'index.html': 0,
-    '/': 0,
-    'explore.html': 1,
-    'community.html': 2,
-    'my.html': 3
-};
-
-function getNavIndex(url) {
-    const page = url.split('/').pop() || 'index.html';
-    return NAV_ORDER[page] !== undefined ? NAV_ORDER[page] : -1; // -1 for non-nav pages like view/room
+function isMobile() {
+    return window.innerWidth <= 768;
 }
 
-async function loadPage(url) {
+async function loadPage(url, direction = 0) {
     try {
         const currentMain = document.querySelector('main');
-        const isMobile = window.innerWidth <= 768;
-
-        // Determine Direction
-        let slideClassOut = 'fade-out';
-        let slideClassIn = 'fade-in';
-
-        if (isMobile) {
-            const currentUrl = window.location.pathname;
-            const currentIndex = getNavIndex(currentUrl);
-            const nextIndex = getNavIndex(url);
-
-            // Only slide if moving between main nav items
-            if (currentIndex !== -1 && nextIndex !== -1) {
-                if (nextIndex > currentIndex) {
-                    // Moving Right (Next) -> Slide Out Left, Slide In from Right
-                    slideClassOut = 'slide-out-left';
-                    slideClassIn = 'slide-in-right';
-                } else if (nextIndex < currentIndex) {
-                    // Moving Left (Prev) -> Slide Out Right, Slide In from Left
-                    slideClassOut = 'slide-out-right';
-                    slideClassIn = 'slide-in-left';
-                }
-            }
-        }
-
         if (currentMain) {
-            currentMain.classList.add(slideClassOut);
-            // Wait for animation
-            await new Promise(resolve => setTimeout(resolve, 250));
+            // Apply exit animation based on direction (mobile only)
+            if (isMobile() && direction !== 0) {
+                const exitClass = direction > 0 ? 'slide-out-left' : 'slide-out-right';
+                currentMain.classList.add(exitClass);
+                await new Promise(resolve => setTimeout(resolve, 250));
+            }
         }
 
         const response = await fetch(url);
@@ -73,9 +50,9 @@ async function loadPage(url) {
         if (newMain && currentMain) {
             Utilsly.cleanupCurrentTool();
 
-            // Cleanly swap content
+            // Swap content
             currentMain.innerHTML = newMain.innerHTML;
-            currentMain.className = newMain.className; // Maintain original classes
+            currentMain.className = newMain.className;
 
             // Update Title
             document.title = doc.title;
@@ -85,18 +62,13 @@ async function loadPage(url) {
 
             Utilsly.initCurrentTool();
 
-            // Clean classes and Trigger In-Animation
-            currentMain.classList.remove('fade-out', 'slide-out-left', 'slide-out-right');
-
-            // Force reflow
-            void currentMain.offsetWidth;
-
-            currentMain.classList.add(slideClassIn);
-
-            // Remove animation class after completion
-            setTimeout(() => {
-                currentMain.classList.remove('fade-in', 'slide-in-right', 'slide-in-left');
-            }, 300);
+            // Apply enter animation based on direction (mobile only)
+            if (isMobile() && direction !== 0) {
+                currentMain.classList.remove('slide-out-left', 'slide-out-right');
+                const enterClass = direction > 0 ? 'slide-in-left' : 'slide-in-right';
+                currentMain.classList.add(enterClass);
+                setTimeout(() => currentMain.classList.remove(enterClass), 300);
+            }
 
             // Scroll to top
             window.scrollTo(0, 0);
@@ -111,8 +83,13 @@ async function loadPage(url) {
 
 function MapsTo(url) {
     if (window.location.href === url) return;
-    history.pushState(null, '', url);
-    loadPage(url);
+
+    const targetIndex = getPageIndex(url);
+    const direction = targetIndex - currentPageIndex;
+    currentPageIndex = targetIndex;
+
+    history.pushState({ pageIndex: targetIndex }, '', url);
+    loadPage(url, direction);
 }
 
 function updateNavActiveStates(url) {
@@ -128,11 +105,17 @@ function updateNavActiveStates(url) {
     });
 }
 
-window.addEventListener('popstate', () => {
-    loadPage(window.location.pathname);
+window.addEventListener('popstate', (e) => {
+    const targetIndex = e.state?.pageIndex ?? getPageIndex(window.location.pathname);
+    const direction = targetIndex - currentPageIndex;
+    currentPageIndex = targetIndex;
+    loadPage(window.location.pathname, direction);
 });
 
 document.addEventListener('DOMContentLoaded', () => {
+    // Set initial state
+    history.replaceState({ pageIndex: currentPageIndex }, '', window.location.href);
+
     // Intercept clicks on internal links
     document.body.addEventListener('click', (e) => {
         const link = e.target.closest('a');
@@ -156,8 +139,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 const url = match[1];
                 if (!url.startsWith('http') && url.endsWith('.html')) {
                     e.preventDefault();
-                    // We need to stop the original onclick from firing if possible, 
-                    // but since it's an inline attribute, we might just call MapsTo and stop propagation
                     e.stopImmediatePropagation();
                     MapsTo(url);
                 }
@@ -180,7 +161,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // Inject Header
     const headerTarget = document.getElementById('app-header-target');
     if (headerTarget) {
-        // Standard Right Content for all pages
         const rightContent = `
             <div style="display: flex; gap: 12px; align-items: center;">
                 <button onclick="MapsTo('create.html')" style="width: 36px; height: 36px; border-radius: 50%; background: var(--text-main); color: white; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer;">
@@ -283,4 +263,3 @@ document.addEventListener('DOMContentLoaded', () => {
 
     Utilsly.initCurrentTool();
 });
-

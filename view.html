@@ -5,186 +5,247 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>촉법소년 연령 하향, 실효성이 있는가? | Debable</title>
-    <!-- Preload Font -->
     <link rel="stylesheet" as="style" crossorigin
         href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css" />
     <link rel="stylesheet" href="css/reset.css">
     <link rel="stylesheet" href="css/style.css">
     <style>
-        /* View Specific Styles - Chat Focused */
-        body {
-            background-color: #F3F4F6;
-            /* Slight gray bg for chat contrast */
+        /* View Page Styles */
+        .debate-header {
+            margin-bottom: 20px;
         }
 
-        .chat-container {
+        .debate-meta {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .debate-title {
+            font-size: 22px;
+            font-weight: 800;
+            line-height: 1.3;
+            margin-bottom: 12px;
+        }
+
+        .debate-info {
+            font-size: 14px;
+            color: var(--text-sub);
+            line-height: 1.5;
+        }
+
+        /* Vote Bar */
+        .vote-section {
+            background: var(--bg-surface);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            margin-bottom: 24px;
+        }
+
+        .vote-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .vote-bar {
+            height: 10px;
+            border-radius: 5px;
+            overflow: hidden;
+            display: flex;
+            background: #E5E7EB;
+        }
+
+        .vote-segment {
+            height: 100%;
+            transition: width 0.4s ease;
+        }
+
+        .vote-count {
+            text-align: center;
+            font-size: 12px;
+            color: var(--text-light);
+            margin-top: 10px;
+        }
+
+        /* Chat Feed */
+        .chat-section {
+            border-top: 1px solid var(--border-color);
+            padding-top: 16px;
+        }
+
+        .chat-tabs {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .chat-tab {
+            padding-bottom: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-light);
+            border-bottom: 2px solid transparent;
+            cursor: pointer;
+            transition: color 0.15s;
+        }
+
+        .chat-tab.active {
+            color: var(--text-main);
+            border-bottom-color: var(--text-main);
+        }
+
+        .chat-feed {
             display: flex;
             flex-direction: column;
             gap: 16px;
-            padding-bottom: 24px;
         }
 
-        .chat-bubble-row {
+        .chat-message {
             display: flex;
-            gap: 12px;
-            align-items: flex-end;
-            margin-bottom: 8px;
+            gap: 10px;
         }
 
-        .chat-bubble-row.pro {
-            flex-direction: row;
-            /* Left align */
-        }
-
-        .chat-bubble-row.con {
-            flex-direction: row-reverse;
-            /* Right align */
-        }
-
-        .avatar {
+        .chat-avatar {
             width: 36px;
             height: 36px;
             border-radius: 50%;
             background: #E5E7EB;
+            flex-shrink: 0;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 18px;
-            flex-shrink: 0;
-            border: 2px solid white;
+            font-size: 14px;
         }
 
-        .pro .avatar {
+        .chat-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .chat-header {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 4px;
+        }
+
+        .chat-name {
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .chat-team {
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        .team-pro {
             background: #DBEAFE;
             color: #1D4ED8;
         }
 
-        .con .avatar {
+        .team-con {
             background: #FEE2E2;
             color: #DC2626;
         }
 
-        .chat-bubble {
-            max-width: 75%;
-            padding: 12px 16px;
-            border-radius: 16px;
-            font-size: 15px;
-            line-height: 1.5;
-            position: relative;
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-        }
-
-        .pro .chat-bubble {
-            background: white;
-            color: var(--text-main);
-            border-bottom-left-radius: 4px;
-        }
-
-        .con .chat-bubble {
-            background: #FEE2E2;
-            /* Light red tint for opponent/con context */
-            color: #7F1D1D;
-            border-bottom-right-radius: 4px;
-        }
-
-        /* Actually commonly in chat apps:
-           Left (Opponent/Other) vs Right (Me).
-           But here we are Spectator.
-           So let's do:
-           Left: Pro Team (Blue)
-           Right: Con Team (Red)
-           To match the Vote Bar visually.
-        */
-
-        .chat-meta {
+        .chat-time {
             font-size: 11px;
             color: var(--text-light);
-            margin-top: 4px;
-            display: flex;
-            gap: 4px;
+            margin-left: auto;
         }
 
-        .timer-sticky {
-            position: sticky;
-            top: 76px;
-            /* Header + padding */
-            z-index: 100;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(5px);
-            padding: 8px 16px;
-            border-radius: 20px;
-            margin: 0 auto 16px;
-            width: fit-content;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-weight: 700;
-            color: #DC2626;
+        .chat-text {
             font-size: 14px;
+            line-height: 1.5;
+            color: var(--text-main);
         }
 
-        /* Vote Header */
-        .debate-header-card {
-            background: white;
-            padding: 20px 16px;
-            border-bottom: 1px solid var(--border-color);
-            margin-bottom: 16px;
-        }
-
-        .vote-bar {
-            height: 8px;
-            border-radius: 4px;
-            background: #E5E7EB;
-            display: flex;
-            overflow: hidden;
-            margin: 8px 0;
-        }
-
-        .vote-seg {
-            height: 100%;
-        }
-
-        /* Bottom Interaction */
-        .bottom-action-bar {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background: white;
-            padding: 12px 16px;
-            border-top: 1px solid var(--border-color);
+        .chat-actions {
             display: flex;
             gap: 12px;
-            padding-bottom: calc(12px + env(safe-area-inset-bottom));
-            z-index: 1001;
+            margin-top: 8px;
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .chat-action {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            transition: color 0.15s;
+        }
+
+        .chat-action:hover {
+            color: var(--text-sub);
+        }
+
+        /* Floating Action Bar */
+        .action-bar {
+            position: fixed;
+            bottom: calc(var(--mobile-nav-height, 60px) + var(--safe-bottom, 0px) + 16px);
+            left: 16px;
+            right: 16px;
+            display: flex;
+            gap: 8px;
+            z-index: 100;
         }
 
         .action-btn {
             flex: 1;
-            height: 48px;
-            border-radius: 24px;
-            font-weight: 700;
-            font-size: 15px;
+            padding: 14px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 14px;
             border: none;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 6px;
+            transition: transform 0.1s;
         }
 
-        /* Mod Message */
-        .mod-msg-box {
-            background: #F3F4F6;
-            padding: 8px 12px;
-            border-radius: 8px;
-            font-size: 13px;
-            color: var(--text-sub);
-            text-align: center;
-            margin: 16px 0;
-            font-weight: 600;
-            border: 1px solid #E5E7EB;
+        .action-btn:active {
+            transform: scale(0.98);
+        }
+
+        .btn-pro {
+            background: #EFF6FF;
+            color: var(--primary);
+        }
+
+        .btn-con {
+            background: #FEF2F2;
+            color: #DC2626;
+        }
+
+        .btn-join {
+            background: var(--text-main);
+            color: white;
+        }
+
+        @media (min-width: 769px) {
+            .action-bar {
+                position: static;
+                margin-top: 24px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-feed {
+                padding-bottom: calc(var(--mobile-nav-height) + var(--safe-bottom) + 80px) !important;
+            }
         }
     </style>
 </head>
@@ -193,139 +254,172 @@
 
     <div id="app-header-target"></div>
 
-    <div class="app-container" style="display: block; max-width: 600px;"> <!-- Mobile Centered View -->
+    <div class="app-container">
 
         <div id="left-sidebar-target"></div>
 
-        <main class="main-feed" style="margin: 0 auto; width: 100%; padding-bottom: 80px;">
+        <main class="main-feed">
 
-            <!-- Debate Info Header -->
-            <div class="debate-header-card">
-                <div style="margin-bottom: 4px; display: flex; align-items: center; gap: 6px;">
+            <!-- Debate Header -->
+            <div class="debate-header">
+                <div class="debate-meta">
                     <span class="status-badge live">LIVE</span>
-                    <span style="font-size: 12px; color: var(--text-light);">사회/정치 • 1.4k명 참관</span>
+                    <span>• 정치/사회</span>
+                    <span>• 1:1 토론</span>
                 </div>
-                <h1 style="font-size: 20px; font-weight: 800; line-height: 1.3; margin-bottom: 16px;">
-                    촉법소년 연령 하향, 실효성이 있는가?
-                </h1>
+                <h1 class="debate-title">촉법소년 연령 하향, 실효성이 있는가?</h1>
+                <p class="debate-info">
+                    현재 2라운드 진행 중 • 참관 1,420명 • 시작 32분 전
+                </p>
+            </div>
 
-                <!-- Vote -->
-                <div style="display: flex; justify-content: space-between; font-size: 13px; font-weight: 700;">
-                    <span style="color: #2563EB;">찬성 36%</span>
-                    <span style="color: #DC2626;">반대 64%</span>
+            <!-- Vote Section -->
+            <div class="vote-section">
+                <div class="vote-stats">
+                    <span style="color: #2563EB;">👍 찬성 36%</span>
+                    <span style="color: #DC2626;">👎 반대 64%</span>
                 </div>
                 <div class="vote-bar">
-                    <div class="vote-seg" style="width: 36%; background: #2563EB;"></div>
-                    <div class="vote-seg" style="width: 64%; background: #DC2626;"></div>
+                    <div class="vote-segment" style="width: 36%; background: #2563EB;"></div>
+                    <div class="vote-segment" style="width: 64%; background: #DC2626;"></div>
                 </div>
-                <div style="text-align: center; font-size: 12px; color: var(--text-light);">
-                    실시간 청중 투표 진행 중
+                <p class="vote-count">실시간 청중 투표 (총 892표)</p>
+            </div>
+
+            <!-- Chat Section -->
+            <div class="chat-section">
+                <div class="chat-tabs">
+                    <div class="chat-tab active">토론 진행</div>
+                    <div class="chat-tab">청중 의견</div>
+                </div>
+
+                <div class="chat-feed">
+                    <!-- Message 1 -->
+                    <div class="chat-message">
+                        <div class="chat-avatar">👨‍🏫</div>
+                        <div class="chat-content">
+                            <div class="chat-header">
+                                <span class="chat-name">LogicKing</span>
+                                <span class="chat-team team-pro">찬성</span>
+                                <span class="chat-time">2분 전</span>
+                            </div>
+                            <p class="chat-text">
+                                처벌의 강화가 아니라 '책임 연령의 현실화'입니다. 10대 청소년들의 인지 능력과 사회적 경험이 과거와 다릅니다.
+                                디지털 네이티브 세대는 더 빠르게 성숙하고 있고, 법도 이를 반영해야 합니다.
+                            </p>
+                            <div class="chat-actions">
+                                <span class="chat-action">👏 42</span>
+                                <span class="chat-action">💬 답글</span>
+                                <span class="chat-action">🔗 공유</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Message 2 -->
+                    <div class="chat-message">
+                        <div class="chat-avatar">👩‍⚖️</div>
+                        <div class="chat-content">
+                            <div class="chat-header">
+                                <span class="chat-name">LawStudent</span>
+                                <span class="chat-team team-con">반대</span>
+                                <span class="chat-time">1분 전</span>
+                            </div>
+                            <p class="chat-text">
+                                그 논리라면 모든 법적 권리 연령도 함께 하향해야 합니다. 선거권, 운전면허, 음주 연령은 그대로 두고
+                                처벌 연령만 낮추는 것은 균형이 맞지 않습니다. 소년법의 본질은 '교화'입니다.
+                            </p>
+                            <div class="chat-actions">
+                                <span class="chat-action">👏 58</span>
+                                <span class="chat-action">💬 답글</span>
+                                <span class="chat-action">🔗 공유</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Message 3 -->
+                    <div class="chat-message">
+                        <div class="chat-avatar">👨‍🏫</div>
+                        <div class="chat-content">
+                            <div class="chat-header">
+                                <span class="chat-name">LogicKing</span>
+                                <span class="chat-team team-pro">찬성</span>
+                                <span class="chat-time">방금</span>
+                            </div>
+                            <p class="chat-text">
+                                교화의 실패율을 보셨습니까? 촉법소년 재범률이 35%를 넘습니다. 현재 시스템이 작동하지 않는다는 증거입니다.
+                                피해자의 권리와 사회 안전도 고려해야 합니다.
+                            </p>
+                            <div class="chat-actions">
+                                <span class="chat-action">👏 31</span>
+                                <span class="chat-action">💬 답글</span>
+                                <span class="chat-action">🔗 공유</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Audience Comment -->
+                    <div class="chat-message" style="opacity: 0.7;">
+                        <div class="chat-avatar" style="background: #F3F4F6;">👤</div>
+                        <div class="chat-content">
+                            <div class="chat-header">
+                                <span class="chat-name">청중_1024</span>
+                                <span class="chat-time">방금</span>
+                            </div>
+                            <p class="chat-text">
+                                양측 다 좋은 논점이네요. 저는 개인적으로 교화 시스템 강화가 우선이라고 생각합니다.
+                            </p>
+                            <div class="chat-actions">
+                                <span class="chat-action">👍 12</span>
+                                <span class="chat-action">💬 답글</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <!-- Sticky Timer -->
-            <div class="timer-sticky">
-                <div
-                    style="width: 8px; height: 8px; background: #DC2626; border-radius: 50%; animation: pulse 1s infinite;">
-                </div>
-                <span>반대 측 발언 중</span>
-                <span style="color: var(--text-main); margin-left: 4px;">02:14</span>
-            </div>
-
-            <!-- Chat Stream -->
-            <div class="chat-container" style="padding: 0 16px;">
-
-                <!-- Mod Message -->
-                <div class="mod-msg-box">
-                    📢 2라운드 입론이 시작되었습니다. (각 팀 3분)
-                </div>
-
-                <!-- Pro Argument -->
-                <div class="chat-bubble-row pro">
-                    <div class="avatar">👨‍🏫</div>
-                    <div style="display: flex; flex-direction: column; align-items: flex-start;">
-                        <span
-                            style="font-size: 12px; font-weight: 700; color: #2563EB; margin-bottom: 2px; margin-left: 4px;">LogicKing
-                            (찬성)</span>
-                        <div class="chat-bubble">
-                            현재 소년법의 보호처분만으로는 날로 흉포화되는 청소년 범죄를 막을 수 없습니다. 처벌 강화가 시급합니다.
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Con Argument -->
-                <div class="chat-bubble-row con">
-                    <div class="avatar">👩‍⚖️</div>
-                    <div style="display: flex; flex-direction: column; align-items: flex-end;">
-                        <span
-                            style="font-size: 12px; font-weight: 700; color: #DC2626; margin-bottom: 2px; margin-right: 4px;">SeriousUser
-                            (반대)</span>
-                        <div class="chat-bubble" style="background: white; border: 1px solid #FECACA; color: #111827;">
-                            처벌 강화가 범죄율 감소로 이어진다는 실증적 데이터가 부족합니다. 오히려 낙인 효과로 재범률만 높일 수 있습니다.
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Pro Argument -->
-                <div class="chat-bubble-row pro">
-                    <div class="avatar">🧑‍💼</div>
-                    <div style="display: flex; flex-direction: column; align-items: flex-start;">
-                        <span
-                            style="font-size: 12px; font-weight: 700; color: #2563EB; margin-bottom: 2px; margin-left: 4px;">ProDebater
-                            (찬성)</span>
-                        <div class="chat-bubble">
-                            피해자의 고통을 생각해야 합니다. 가해자가 어리다는 이유만으로 면죄부를 주는 것은 정의롭지 않습니다.
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Con Typing Indicator -->
-                <div class="chat-bubble-row con">
-                    <div class="avatar">📸</div>
-                    <div class="chat-bubble" style="padding: 12px;">
-                        <div style="display: flex; gap: 4px;">
-                            <div
-                                style="width: 6px; height: 6px; background: #9CA3AF; border-radius: 50%; animation: pulse 0.6s infinite;">
-                            </div>
-                            <div
-                                style="width: 6px; height: 6px; background: #9CA3AF; border-radius: 50%; animation: pulse 0.6s infinite 0.2s;">
-                            </div>
-                            <div
-                                style="width: 6px; height: 6px; background: #9CA3AF; border-radius: 50%; animation: pulse 0.6s infinite 0.4s;">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
+            <!-- Action Bar (Desktop position) -->
+            <div class="action-bar">
+                <button class="action-btn btn-pro">👍 찬성</button>
+                <button class="action-btn btn-con">👎 반대</button>
+                <button class="action-btn btn-join">✍️ 의견 남기기</button>
             </div>
 
         </main>
 
-        <!-- Bottom Actions (Spectator) -->
-        <div class="bottom-action-bar">
-            <button class="action-btn" style="background: #EFF6FF; color: #2563EB;">
-                👍 찬성 투표
-            </button>
-            <button class="action-btn" style="background: #FEF2F2; color: #DC2626;">
-                👎 반대 투표
-            </button>
-            <button class="action-btn" style="flex: 1.5; background: var(--text-main); color: white;"
-                onclick="location.href='room.html'">
-                💬 참여하기
-            </button>
-        </div>
+        <aside class="right-sidebar">
+            <section class="widget">
+                <h3 class="widget-title">토론 정보</h3>
+                <div class="widget-item" style="cursor: default;">
+                    <div class="widget-text" style="white-space: normal;">
+                        <strong>형식:</strong> 1:1 실시간 토론<br>
+                        <strong>라운드:</strong> 3라운드 (각 10분)<br>
+                        <strong>참여 조건:</strong> 레벨 3 이상
+                    </div>
+                </div>
+            </section>
+
+            <section class="widget">
+                <h3 class="widget-title">참여자</h3>
+                <div class="widget-item">
+                    <div class="widget-rank" style="color: #2563EB;">찬</div>
+                    <div style="flex: 1;">
+                        <span class="widget-text" style="font-weight: 600;">LogicKing</span>
+                        <span class="widget-meta">승률 84% • Lv.12</span>
+                    </div>
+                </div>
+                <div class="widget-item">
+                    <div class="widget-rank" style="color: #DC2626;">반</div>
+                    <div style="flex: 1;">
+                        <span class="widget-text" style="font-weight: 600;">LawStudent</span>
+                        <span class="widget-meta">승률 76% • Lv.9</span>
+                    </div>
+                </div>
+            </section>
+        </aside>
 
     </div>
 
-    <!-- No standard Mobile Nav on this view, blocked by action bar, or we keep it? User said "Bottom Nav overlaps". 
-         Usually "View" page doesn't show main nav. But if we must, we should hide the action bar or main nav.
-         Let's hide the main mobile nav on this specific page to focus on debate actions.
-    -->
-    <style>
-        .mobile-nav {
-            display: none !important;
-        }
-    </style>
+    <div id="mobile-nav-target"></div>
 
     <script src="js/layout.js"></script>
 </body>
