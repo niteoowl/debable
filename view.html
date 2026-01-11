@@ -3,45 +3,243 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>토론룸 | Debable</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>촉법소년 연령 하향, 실효성이 있는가? | Debable</title>
+    <!-- Preload Font -->
     <link rel="stylesheet" as="style" crossorigin
         href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css" />
     <link rel="stylesheet" href="css/reset.css">
     <link rel="stylesheet" href="css/style.css">
     <style>
-        /* View Specific Overrides for Arena Feel */
-        .arena-header {
-            margin-bottom: 24px;
-        }
-
-        .arena-badge-row {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 12px;
-        }
-
-        .timer-display {
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 32px;
-            font-weight: 700;
-            color: var(--primary);
-            letter-spacing: 2px;
-            margin-bottom: 24px;
-        }
-
-        .control-panel {
-            background: var(--bg-surface);
-            border: 1px solid var(--border-color);
+        /* View Specific Styles */
+        .debate-stage {
+            background: black;
             border-radius: var(--radius-md);
-            padding: 16px;
+            overflow: hidden;
+            position: relative;
+            aspect-ratio: 16/9;
+            margin-bottom: 16px;
+        }
+
+        .debate-video-mock {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, #1f2937, #111827);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            flex-direction: column;
+        }
+
+        .user-cam-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            height: 100%;
+            width: 100%;
+        }
+
+        .cam-slot {
+            position: relative;
+            border: 1px solid #374151;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .cam-label {
+            position: absolute;
+            bottom: 8px;
+            left: 8px;
+            background: rgba(0, 0, 0, 0.6);
+            color: white;
+            font-size: 12px;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .status-overlay {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            display: flex;
+            gap: 8px;
+        }
+
+        .stage-badge {
+            background: rgba(220, 38, 38, 0.9);
+            color: white;
+            font-weight: 700;
+            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .timer-badge {
+            background: rgba(0, 0, 0, 0.6);
+            color: white;
+            font-weight: 600;
+            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            backdrop-filter: blur(4px);
+        }
+
+        /* Vote Bar */
+        .vote-bar-container {
             margin-bottom: 24px;
         }
 
-        .chat-input-area {
+        .vote-bar {
+            height: 12px;
+            border-radius: 6px;
+            overflow: hidden;
             display: flex;
+            background: #E5E7EB;
+            margin-bottom: 8px;
+        }
+
+        .vote-segment {
+            height: 100%;
+            transition: width 0.5s ease;
+        }
+
+        .vote-stats {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        /* Argument Feed */
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 16px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 12px;
+            font-weight: 600;
+            color: var(--text-light);
+            border-bottom: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .tab-btn.active {
+            color: var(--text-main);
+            border-bottom-color: var(--text-main);
+        }
+
+        .chat-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            height: 400px;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+
+        .chat-item {
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .chat-user {
+            font-weight: 700;
+            margin-right: 4px;
+            color: var(--text-sub);
+        }
+
+        .chat-msg {
+            color: var(--text-main);
+        }
+
+        .team-badge {
+            font-size: 10px;
+            padding: 2px 4px;
+            border-radius: 3px;
+            margin-right: 4px;
+            font-weight: 500;
+        }
+
+        .badge-pro {
+            background: #DBEAFE;
+            color: #1D4ED8;
+        }
+
+        .badge-con {
+            background: #FEE2E2;
+            color: #DC2626;
+        }
+
+        /* Interaction Bar */
+        .interaction-dock {
+            display: flex;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 12px;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             gap: 8px;
-            margin-top: 12px;
+            font-size: 14px;
+            transition: transform 0.1s;
+        }
+
+        .action-btn:active {
+            transform: scale(0.98);
+        }
+
+        .btn-participate {
+            background: var(--text-main);
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .app-container {
+                display: block;
+                /* Override grid */
+            }
+
+            .left-sidebar,
+            .right-sidebar {
+                display: none !important;
+            }
+
+            .main-feed {
+                width: 100%;
+                padding-bottom: 80px;
+            }
+
+            .debate-stage {
+                margin: -24px -16px 16px -16px;
+                /* Bleed to edges */
+                border-radius: 0;
+                aspect-ratio: 16/9;
+            }
+
+            .vote-bar-container,
+            .tabs,
+            .tab-content,
+            .interaction-dock {
+                padding: 0 4px;
+                /* Inner padding fix since we bled the stage */
+            }
         }
     </style>
 </head>
@@ -52,169 +250,112 @@
 
     <div class="app-container">
 
-        <!-- Left Sidebar: Info (Overrides default sidebar for this page, or we can use shared + custom content. For now, let's keep it specific as it's a "Exit" button and Info) -->
-        <!-- Actually, user complained about bottom nav changing. Let's use the shared layout for consistency, but maybe we can inject specific sidebar content IF we make layout.js flexible. 
-             However, for now, let's use the shared mobile nav target to fix the bottom nav issue. The sidebar issue is less critical as desktop users might want to exit easily. 
-             If we use shared sidebar, we lose the debate info. 
-             Let's KEEP the custom sidebar for desktop (as it has Debate Info), but USE shared Mobile Nav for consistency. -->
-        <aside class="left-sidebar">
-            <a href="index.html" class="nav-item">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M19 12H5"></path>
-                    <polyline points="12 19 5 12 12 5"></polyline>
-                </svg>
-                나가기 (홈으로)
-            </a>
+        <div id="left-sidebar-target"></div>
 
-            <div style="margin-top: 32px;">
-                <h3
-                    style="font-size: 13px; font-weight: 700; color: var(--text-light); text-transform: uppercase; margin-bottom: 12px;">
-                    Debate Info</h3>
-                <div style="font-size: 14px; margin-bottom: 16px;">
-                    <div style="color: var(--text-sub); margin-bottom: 4px;">형식</div>
-                    <div style="font-weight: 600;">1:1 맞짱 토론</div>
-                </div>
-                <div style="font-size: 14px; margin-bottom: 16px;">
-                    <div style="color: var(--text-sub); margin-bottom: 4px;">라운드</div>
-                    <div style="font-weight: 600;">2 / 5 Round</div>
-                </div>
-                <div style="font-size: 14px; margin-bottom: 16px;">
-                    <div style="color: var(--text-sub); margin-bottom: 4px;">사회자</div>
-                    <div style="font-weight: 600;">Social_Mod</div>
-                </div>
-            </div>
-        </aside>
+        <!-- Main Feed (Center) -->
+        <main class="main-feed" style="grid-column: 2 / -1;">
 
-        <!-- Center: Arena -->
-        <main class="main-feed">
-
-            <div class="arena-header">
-                <div class="arena-badge-row">
-                    <span class="status-badge live">LIVE</span>
-                    <span class="status-badge">정치/사회</span>
-                </div>
-                <h1 style="font-size: 28px; font-weight: 800; line-height: 1.3; margin-bottom: 12px;">촉법소년 연령 하향, 범죄 예방에
-                    실효성이 있는가?</h1>
-            </div>
-
-            <!-- Dashboard -->
-            <div class="control-panel">
-                <div style="display: flex; justify-content: space-between; align-items: flex-end;">
-                    <div>
-                        <span
-                            style="font-size: 12px; font-weight: 700; color: #DC2626; display: block; margin-bottom: 4px;">CURRENT
-                            TURN</span>
-                        <span style="font-size: 18px; font-weight: 700;">반대 측 (방어)</span>
+            <!-- Video Stage -->
+            <div class="debate-stage">
+                <div class="user-cam-grid">
+                    <div class="cam-slot" style="background: #e0f2fe;">
+                        <span style="font-size: 40px;">👨‍🏫</span>
+                        <div class="cam-label">찬성: LogicKing</div>
                     </div>
-                    <div class="timer-display">
-                        04:23
+                    <div class="cam-slot" style="background: #fef2f2;">
+                        <span style="font-size: 40px;">👩‍⚖️</span>
+                        <div class="cam-label">반대: SeriousUser</div>
                     </div>
                 </div>
-                <div style="height: 4px; width: 100%; background: #E5E7EB; border-radius: 2px;">
-                    <div style="width: 45%; height: 100%; background: #DC2626;"></div>
+
+                <div class="status-overlay">
+                    <div class="stage-badge">
+                        <div
+                            style="width: 6px; height: 6px; background: white; border-radius: 50%; animation: pulse 1s infinite;">
+                        </div>
+                        LIVE
+                    </div>
+                    <div class="timer-badge">04:12 남음</div>
                 </div>
             </div>
 
-            <!-- Feed -->
-            <div style="border-left: 2px solid var(--border-color); padding-left: 24px; margin-left: 10px;">
+            <!-- Title & Info -->
+            <h1 style="font-size: 20px; font-weight: 800; margin-bottom: 8px; padding: 0 4px;">촉법소년 연령 하향, 실효성이 있는가?
+            </h1>
+            <div style="font-size: 14px; color: var(--text-sub); margin-bottom: 24px; padding: 0 4px;">
+                현재 2라운드: 반대 측 입론 진행 중
+            </div>
 
-                <div style="margin-bottom: 32px; position: relative;">
-                    <div
-                        style="position: absolute; left: -29px; top: 0; width: 10px; height: 10px; border-radius: 50%; background: var(--border-color); border: 2px solid white;">
-                    </div>
-                    <span style="font-size: 12px; color: var(--text-light);">System • 14:00</span>
-                    <div style="margin-top: 4px; font-weight: 600;">토론이 시작되었습니다.</div>
+            <!-- Vote Status -->
+            <div class="vote-bar-container">
+                <div class="vote-stats">
+                    <span style="color: #2563EB;">찬성 36%</span>
+                    <span style="color: #DC2626;">반대 64%</span>
                 </div>
-
-                <div style="margin-bottom: 32px; position: relative;">
-                    <div
-                        style="position: absolute; left: -29px; top: 0; width: 10px; height: 10px; border-radius: 50%; background: var(--primary); border: 2px solid white;">
-                    </div>
-                    <span style="font-size: 12px; color: var(--text-light);">찬성 (WorkerHolic) • 14:05</span>
-                    <div
-                        style="margin-top: 8px; padding: 16px; background: #F0F9FF; border-left: 3px solid var(--primary); border-radius: 4px;">
-                        <p style="font-size: 15px; line-height: 1.6;">
-                            최근 5년간 촉법소년 범죄율이 30% 증가했습니다. 이는 현행법이 범죄를 억제하지 못한다는 증거입니다. 처벌 연령을 낮추어 강력한 경고 메시지를 주어야 합니다.
-                        </p>
-                    </div>
+                <div class="vote-bar">
+                    <div class="vote-segment" style="width: 36%; background: #2563EB;"></div>
+                    <div class="vote-segment" style="width: 64%; background: #DC2626;"></div>
                 </div>
+                <p style="font-size: 12px; color: var(--text-light); text-align: center;">
+                    실시간 청중 투표 현황 (총 1,420명 참여)
+                </p>
+            </div>
 
-                <div style="margin-bottom: 32px; position: relative;">
-                    <div
-                        style="position: absolute; left: -29px; top: 0; width: 10px; height: 10px; border-radius: 50%; background: #DC2626; border: 2px solid white;">
+            <!-- Tabs -->
+            <div class="tabs">
+                <div class="tab-btn active">실시간 의견</div>
+                <div class="tab-btn">논거 분석</div>
+                <div class="tab-btn">정보</div>
+            </div>
+
+            <!-- Tab Content (Chat) -->
+            <div class="tab-content" style="padding: 0 4px;">
+                <div class="chat-list">
+                    <div class="chat-item">
+                        <span class="team-badge badge-con">반대</span>
+                        <span class="chat-user">LawStudent:</span>
+                        <span class="chat-msg">교화 가능성을 배제하고 처벌만 강화하는 건 근본적 해결책이 아닙니다.</span>
                     </div>
-                    <span style="font-size: 12px; color: var(--text-light);">반대 (LawStudent) • 14:12</span>
-                    <div
-                        style="margin-top: 8px; padding: 16px; background: #FEF2F2; border-left: 3px solid #DC2626; border-radius: 4px;">
-                        <p style="font-size: 15px; line-height: 1.6;">
-                            통계의 착시입니다. 신고율이 높아진 것이지 실제 범죄가 흉악해졌다는 근거는 부족합니다. 낙인 효과로 인해 오히려 재범률만 높일 수 있습니다. 교화 시스템 개선이
-                            먼저입니다.
-                        </p>
+                    <div class="chat-item">
+                        <span class="chat-user">Citizen1:</span>
+                        <span class="chat-msg">하지만 피해자의 고통은요? 현실적인 대안이 필요합니다.</span>
+                    </div>
+                    <div class="chat-item">
+                        <span class="team-badge badge-pro">찬성</span>
+                        <span class="chat-user">ProDebater:</span>
+                        <span class="chat-msg">동의합니다. 연령을 낮춰서 경각심을 줘야 해요.</span>
+                    </div>
+                    <div class="chat-item">
+                        <span class="chat-user">Observer99:</span>
+                        <span class="chat-msg">지금 반대 측 논리가 좀 더 설득력 있네요.</span>
+                    </div>
+                    <div class="chat-item">
+                        <span class="team-badge badge-con">반대</span>
+                        <span class="chat-user">LawStudent:</span>
+                        <span class="chat-msg">통계적으로도 처벌 강화가 범죄율 감소로 직결되지 않습니다.</span>
                     </div>
                 </div>
             </div>
 
-            <!-- Input (Observer) -->
-            <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid var(--border-color);">
-                <span style="font-size: 13px; font-weight: 600; color: var(--text-sub);">참관인 의견 남기기 (발언권 없음)</span>
-                <div class="chat-input-area">
-                    <input type="text" placeholder="의견을 입력하세요..."
-                        style="flex: 1; padding: 10px; border: 1px solid var(--border-color); border-radius: 4px;">
-                    <button class="btn btn-primary" style="padding: 0 20px;">전송</button>
-                </div>
+            <!-- Interaction Dock -->
+            <div class="interaction-dock">
+                <button class="action-btn" style="background: #EFF6FF; color: var(--primary);">
+                    👍 찬성 응원
+                </button>
+                <button class="action-btn" style="background: #FEF2F2; color: #DC2626;">
+                    👎 반대 응원
+                </button>
+                <button class="action-btn btn-participate" onclick="location.href='room.html'">
+                    🎤 토론 참여하기
+                </button>
             </div>
 
         </main>
 
-        <!-- Right: Audience Controls -->
-        <aside class="right-sidebar">
-
-            <!-- Vote Widget -->
-            <section class="widget" style="background: var(--bg-surface); padding: 16px; border-radius: 8px;">
-                <h3 class="widget-title">실시간 청중 투표</h3>
-                <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 13px;">
-                    <span style="color: var(--primary);">찬성 45%</span>
-                    <span style="color: #DC2626;">반대 55%</span>
-                </div>
-                <div
-                    style="height: 8px; width: 100%; background: #E5E7EB; border-radius: 4px; overflow: hidden; display: flex;">
-                    <div style="width: 45%; background: var(--primary);"></div>
-                    <div style="width: 55%; background: #DC2626;"></div>
-                </div>
-                <div style="display: flex; gap: 8px; margin-top: 16px;">
-                    <button class="btn btn-outline"
-                        style="flex: 1; border-color: var(--primary); color: var(--primary);">찬성 투표</button>
-                    <button class="btn btn-outline" style="flex: 1; border-color: #DC2626; color: #DC2626;">반대
-                        투표</button>
-                </div>
-            </section>
-
-            <section class="widget">
-                <h3 class="widget-title">접속 중인 패널</h3>
-                <div class="widget-item">
-                    <div
-                        style="width: 32px; height: 32px; border-radius: 50%; background: var(--primary); opacity: 0.2;">
-                    </div>
-                    <div style="flex: 1;">
-                        <span class="widget-text">WorkerHolic</span>
-                        <span class="widget-meta" style="color: var(--primary);">찬성 측 (발언 완료)</span>
-                    </div>
-                </div>
-                <div class="widget-item">
-                    <div style="width: 32px; height: 32px; border-radius: 50%; background: #DC2626; opacity: 0.2;">
-                    </div>
-                    <div style="flex: 1;">
-                        <span class="widget-text">LawStudent</span>
-                        <span class="widget-meta" style="color: #DC2626;">반대 측 (발언 중)</span>
-                    </div>
-                </div>
-            </section>
-
-        </aside>
+        <!-- Hide Right Sidebar for this view -->
 
     </div>
 
-    <!-- Mobile Nav Target -->
     <div id="mobile-nav-target"></div>
 
     <script src="js/layout.js"></script>
