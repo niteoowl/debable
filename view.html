@@ -10,7 +10,6 @@
     <link rel="stylesheet" href="css/reset.css">
     <link rel="stylesheet" href="css/style.css">
     <style>
-        /* View Page Styles */
         .debate-header {
             margin-bottom: 20px;
         }
@@ -34,7 +33,6 @@
         .debate-info {
             font-size: 14px;
             color: var(--text-sub);
-            line-height: 1.5;
         }
 
         /* Vote Bar */
@@ -73,35 +71,47 @@
             margin-top: 10px;
         }
 
-        /* Chat Feed */
-        .chat-section {
-            border-top: 1px solid var(--border-color);
-            padding-top: 16px;
+        /* Dual Chat Layout */
+        .dual-chat-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 24px;
         }
 
-        .chat-tabs {
+        .chat-section {
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .chat-header {
+            padding: 12px 16px;
+            background: var(--bg-surface);
+            font-weight: 700;
+            font-size: 14px;
             display: flex;
-            gap: 16px;
-            margin-bottom: 16px;
+            align-items: center;
+            gap: 8px;
             border-bottom: 1px solid var(--border-color);
         }
 
-        .chat-tab {
-            padding-bottom: 10px;
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--text-light);
-            border-bottom: 2px solid transparent;
-            cursor: pointer;
-            transition: color 0.15s;
+        .chat-header.debate {
+            background: linear-gradient(135deg, #EFF6FF, #FEF2F2);
         }
 
-        .chat-tab.active {
-            color: var(--text-main);
-            border-bottom-color: var(--text-main);
+        .chat-header .live-dot {
+            width: 8px;
+            height: 8px;
+            background: #DC2626;
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
         }
 
         .chat-feed {
+            padding: 16px;
+            height: 350px;
+            overflow-y: auto;
             display: flex;
             flex-direction: column;
             gap: 16px;
@@ -129,7 +139,7 @@
             min-width: 0;
         }
 
-        .chat-header {
+        .chat-name-row {
             display: flex;
             align-items: center;
             gap: 6px;
@@ -183,22 +193,47 @@
             align-items: center;
             gap: 4px;
             cursor: pointer;
-            transition: color 0.15s;
         }
 
         .chat-action:hover {
             color: var(--text-sub);
         }
 
-        /* Floating Action Bar */
-        .action-bar {
-            position: fixed;
-            bottom: calc(var(--mobile-nav-height, 60px) + var(--safe-bottom, 0px) + 16px);
-            left: 16px;
-            right: 16px;
+        /* Audience Chat */
+        .audience-message {
             display: flex;
             gap: 8px;
-            z-index: 100;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--bg-surface);
+        }
+
+        .audience-avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: #F3F4F6;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+
+        .audience-text {
+            font-size: 13px;
+            line-height: 1.4;
+        }
+
+        .audience-name {
+            font-weight: 600;
+            color: var(--text-sub);
+            margin-right: 6px;
+        }
+
+        /* Action Bar */
+        .action-bar {
+            display: flex;
+            gap: 8px;
         }
 
         .action-btn {
@@ -235,16 +270,19 @@
             color: white;
         }
 
-        @media (min-width: 769px) {
-            .action-bar {
-                position: static;
-                margin-top: 24px;
+        @media (max-width: 900px) {
+            .dual-chat-layout {
+                grid-template-columns: 1fr;
             }
         }
 
         @media (max-width: 768px) {
             .main-feed {
-                padding-bottom: calc(var(--mobile-nav-height) + var(--safe-bottom) + 80px) !important;
+                padding-bottom: calc(var(--mobile-nav-height) + var(--safe-bottom) + 24px) !important;
+            }
+
+            .chat-feed {
+                height: 280px;
             }
         }
     </style>
@@ -269,7 +307,7 @@
                 </div>
                 <h1 class="debate-title">촉법소년 연령 하향, 실효성이 있는가?</h1>
                 <p class="debate-info">
-                    현재 2라운드 진행 중 • 참관 1,420명 • 시작 32분 전
+                    2라운드 진행 중 • 참관 1,420명 • 32분 경과
                 </p>
             </div>
 
@@ -286,98 +324,124 @@
                 <p class="vote-count">실시간 청중 투표 (총 892표)</p>
             </div>
 
-            <!-- Chat Section -->
-            <div class="chat-section">
-                <div class="chat-tabs">
-                    <div class="chat-tab active">토론 진행</div>
-                    <div class="chat-tab">청중 의견</div>
+            <!-- Dual Chat Layout -->
+            <div class="dual-chat-layout">
+                <!-- Participant Debate -->
+                <div class="chat-section">
+                    <div class="chat-header debate">
+                        <span class="live-dot"></span>
+                        토론 진행
+                    </div>
+                    <div class="chat-feed">
+                        <div class="chat-message">
+                            <div class="chat-avatar" style="background: #DBEAFE;">👨‍🏫</div>
+                            <div class="chat-content">
+                                <div class="chat-name-row">
+                                    <span class="chat-name">LogicKing</span>
+                                    <span class="chat-team team-pro">찬성</span>
+                                    <span class="chat-time">2분 전</span>
+                                </div>
+                                <p class="chat-text">
+                                    처벌의 강화가 아니라 '책임 연령의 현실화'입니다. 10대 청소년들의 인지 능력이 과거와 다릅니다.
+                                </p>
+                                <div class="chat-actions">
+                                    <span class="chat-action">👏 42</span>
+                                    <span class="chat-action">💬 반론</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="chat-message">
+                            <div class="chat-avatar" style="background: #FEE2E2;">👩‍⚖️</div>
+                            <div class="chat-content">
+                                <div class="chat-name-row">
+                                    <span class="chat-name">LawStudent</span>
+                                    <span class="chat-team team-con">반대</span>
+                                    <span class="chat-time">1분 전</span>
+                                </div>
+                                <p class="chat-text">
+                                    그 논리라면 모든 법적 권리 연령도 함께 하향해야 합니다. 처벌 연령만 낮추는 것은 균형이 맞지 않습니다.
+                                </p>
+                                <div class="chat-actions">
+                                    <span class="chat-action">👏 58</span>
+                                    <span class="chat-action">💬 반론</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="chat-message">
+                            <div class="chat-avatar" style="background: #DBEAFE;">👨‍🏫</div>
+                            <div class="chat-content">
+                                <div class="chat-name-row">
+                                    <span class="chat-name">LogicKing</span>
+                                    <span class="chat-team team-pro">찬성</span>
+                                    <span class="chat-time">방금</span>
+                                </div>
+                                <p class="chat-text">
+                                    교화의 실패율을 보셨습니까? 촉법소년 재범률이 35%를 넘습니다. 현재 시스템이 작동하지 않는다는 증거입니다.
+                                </p>
+                                <div class="chat-actions">
+                                    <span class="chat-action">👏 31</span>
+                                    <span class="chat-action">💬 반론</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="chat-feed">
-                    <!-- Message 1 -->
-                    <div class="chat-message">
-                        <div class="chat-avatar">👨‍🏫</div>
-                        <div class="chat-content">
-                            <div class="chat-header">
-                                <span class="chat-name">LogicKing</span>
-                                <span class="chat-team team-pro">찬성</span>
-                                <span class="chat-time">2분 전</span>
-                            </div>
-                            <p class="chat-text">
-                                처벌의 강화가 아니라 '책임 연령의 현실화'입니다. 10대 청소년들의 인지 능력과 사회적 경험이 과거와 다릅니다.
-                                디지털 네이티브 세대는 더 빠르게 성숙하고 있고, 법도 이를 반영해야 합니다.
-                            </p>
-                            <div class="chat-actions">
-                                <span class="chat-action">👏 42</span>
-                                <span class="chat-action">💬 답글</span>
-                                <span class="chat-action">🔗 공유</span>
+                <!-- Audience Comments -->
+                <div class="chat-section">
+                    <div class="chat-header">
+                        💬 청중 의견 (324)
+                    </div>
+                    <div class="chat-feed" style="gap: 0;">
+                        <div class="audience-message">
+                            <div class="audience-avatar">👤</div>
+                            <div class="audience-text">
+                                <span class="audience-name">관람객1:</span>
+                                양측 다 좋은 논점이네요. 재범률 통계가 인상적입니다.
                             </div>
                         </div>
-                    </div>
-
-                    <!-- Message 2 -->
-                    <div class="chat-message">
-                        <div class="chat-avatar">👩‍⚖️</div>
-                        <div class="chat-content">
-                            <div class="chat-header">
-                                <span class="chat-name">LawStudent</span>
-                                <span class="chat-team team-con">반대</span>
-                                <span class="chat-time">1분 전</span>
-                            </div>
-                            <p class="chat-text">
-                                그 논리라면 모든 법적 권리 연령도 함께 하향해야 합니다. 선거권, 운전면허, 음주 연령은 그대로 두고
-                                처벌 연령만 낮추는 것은 균형이 맞지 않습니다. 소년법의 본질은 '교화'입니다.
-                            </p>
-                            <div class="chat-actions">
-                                <span class="chat-action">👏 58</span>
-                                <span class="chat-action">💬 답글</span>
-                                <span class="chat-action">🔗 공유</span>
+                        <div class="audience-message">
+                            <div class="audience-avatar">👤</div>
+                            <div class="audience-text">
+                                <span class="audience-name">토론팬:</span>
+                                반대 측 논리가 더 체계적인 것 같아요
                             </div>
                         </div>
-                    </div>
-
-                    <!-- Message 3 -->
-                    <div class="chat-message">
-                        <div class="chat-avatar">👨‍🏫</div>
-                        <div class="chat-content">
-                            <div class="chat-header">
-                                <span class="chat-name">LogicKing</span>
-                                <span class="chat-team team-pro">찬성</span>
-                                <span class="chat-time">방금</span>
-                            </div>
-                            <p class="chat-text">
-                                교화의 실패율을 보셨습니까? 촉법소년 재범률이 35%를 넘습니다. 현재 시스템이 작동하지 않는다는 증거입니다.
-                                피해자의 권리와 사회 안전도 고려해야 합니다.
-                            </p>
-                            <div class="chat-actions">
-                                <span class="chat-action">👏 31</span>
-                                <span class="chat-action">💬 답글</span>
-                                <span class="chat-action">🔗 공유</span>
+                        <div class="audience-message">
+                            <div class="audience-avatar">👤</div>
+                            <div class="audience-text">
+                                <span class="audience-name">시민2024:</span>
+                                피해자 입장도 생각해야 합니다...
                             </div>
                         </div>
-                    </div>
-
-                    <!-- Audience Comment -->
-                    <div class="chat-message" style="opacity: 0.7;">
-                        <div class="chat-avatar" style="background: #F3F4F6;">👤</div>
-                        <div class="chat-content">
-                            <div class="chat-header">
-                                <span class="chat-name">청중_1024</span>
-                                <span class="chat-time">방금</span>
+                        <div class="audience-message">
+                            <div class="audience-avatar">👤</div>
+                            <div class="audience-text">
+                                <span class="audience-name">익명:</span>
+                                찬성 측 반론 기대됩니다!
                             </div>
-                            <p class="chat-text">
-                                양측 다 좋은 논점이네요. 저는 개인적으로 교화 시스템 강화가 우선이라고 생각합니다.
-                            </p>
-                            <div class="chat-actions">
-                                <span class="chat-action">👍 12</span>
-                                <span class="chat-action">💬 답글</span>
+                        </div>
+                        <div class="audience-message">
+                            <div class="audience-avatar">👤</div>
+                            <div class="audience-text">
+                                <span class="audience-name">법학도:</span>
+                                교화 vs 처벌, 영원한 논쟁이네요
+                            </div>
+                        </div>
+                        <div class="audience-message">
+                            <div class="audience-avatar">👤</div>
+                            <div class="audience-text">
+                                <span class="audience-name">관찰자99:</span>
+                                오 드디어 팩트가 나왔다
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Action Bar (Desktop position) -->
+            <!-- Action Bar -->
             <div class="action-bar">
                 <button class="action-btn btn-pro">👍 찬성</button>
                 <button class="action-btn btn-con">👎 반대</button>
