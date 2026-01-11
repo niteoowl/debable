@@ -14,13 +14,45 @@ const Utilsly = {
     }
 };
 
+const PAGE_INDEX_MAP = {
+    'index.html': 1,
+    'explore.html': 2,
+    'community.html': 3,
+    'my.html': 4
+};
+
+// State to track current page index
+let g_currentIndex = 1;
+
+function getPageIndex(url) {
+    // Handle root or simple paths
+    let filename = url.split('/').pop();
+    if (filename === '' || filename === undefined) filename = 'index.html';
+    // Remove query params if any
+    filename = filename.split('?')[0];
+
+    return PAGE_INDEX_MAP[filename] || 99; // 99 for unknown
+}
+
+// Initial set
+g_currentIndex = getPageIndex(window.location.pathname);
+
 async function loadPage(url) {
     try {
+        const nextIndex = getPageIndex(url);
+        const direction = nextIndex > g_currentIndex ? 'right' : 'left';
+        // If indices are same (or unknown/mixed), default to fade or none? 
+        // Let's assume right if equal (refresh) or just no anim class diff
+
+        g_currentIndex = nextIndex; // Update for next time
+
         const currentMain = document.querySelector('main');
+        // On desktop, we want no animation, but CSS handles that via media query.
+        // We just toggle classes.
+
         if (currentMain) {
-            currentMain.classList.add('fade-out');
-            // Wait for fade out animation
-            await new Promise(resolve => setTimeout(resolve, 200));
+            // No slide-out for now, just slide-in the new content
+            // To be smoother, we might wait for 50ms then swap?
         }
 
         const response = await fetch(url);
@@ -36,7 +68,20 @@ async function loadPage(url) {
 
             // Cleanly swap content
             currentMain.innerHTML = newMain.innerHTML;
-            currentMain.className = newMain.className;
+            currentMain.className = newMain.className; // Preserve layout classes
+
+            // Apply Animation Class
+            // remove old anims
+            currentMain.classList.remove('slide-in-right', 'slide-in-left', 'fade-in');
+
+            // Force Reflow
+            void currentMain.offsetWidth;
+
+            if (direction === 'right') {
+                currentMain.classList.add('slide-in-right');
+            } else {
+                currentMain.classList.add('slide-in-left');
+            }
 
             // Update Title
             document.title = doc.title;
@@ -45,11 +90,6 @@ async function loadPage(url) {
             updateNavActiveStates(url);
 
             Utilsly.initCurrentTool();
-
-            // Transition in
-            currentMain.classList.remove('fade-out');
-            currentMain.classList.add('fade-in');
-            setTimeout(() => currentMain.classList.remove('fade-in'), 200);
 
             // Scroll to top
             window.scrollTo(0, 0);

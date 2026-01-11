@@ -3,299 +3,195 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>토론 참여실 | Debable</title>
-    <!-- Preload Font -->
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>토론 참여 (채팅) | Debable</title>
     <link rel="stylesheet" as="style" crossorigin
         href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css" />
     <link rel="stylesheet" href="css/reset.css">
     <link rel="stylesheet" href="css/style.css">
     <style>
         body {
-            background-color: #111827;
-            /* Dark mode for immersion */
-            color: white;
-            padding-top: 0;
-            /* Fullscreen feel */
+            background-color: #F9FAFB;
+            /* Light bg for chat room focus */
+            padding-bottom: 0;
+            overflow: hidden;
+            /* App-like fixed viewport */
+            height: 100vh;
         }
 
-        .app-header {
-            display: none !important;
-            /* Hide standard header */
-        }
-
+        .app-header,
         .mobile-nav {
             display: none !important;
-            /* Hide mobile nav */
         }
 
-        .room-container {
-            display: grid;
-            grid-template-rows: auto 1fr auto;
-            height: 100vh;
-            max-width: 100%;
-            margin: 0;
-            padding: 0;
+        .chat-room-layout {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
         }
 
-        /* Top Bar */
         .room-header {
-            padding: 16px;
+            background: white;
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border-color);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(10px);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+            padding-top: max(12px, env(safe-area-inset-top));
         }
 
-        .room-title-area {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .room-status {
-            font-size: 12px;
-            color: #EF4444;
-            /* Red for live/urgent */
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .room-timer {
-            font-variant-numeric: tabular-nums;
-            font-size: 18px;
-            font-weight: 700;
-        }
-
-        /* Video Grid */
-        .video-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            grid-template-rows: 1fr 1fr;
-            gap: 8px;
-            padding: 8px;
+        .room-msgs {
+            flex: 1;
             overflow-y: auto;
+            padding: 16px;
+            background: #F9FAFB;
         }
 
-        .video-box {
-            background: #1F2937;
-            border-radius: 12px;
-            position: relative;
-            overflow: hidden;
-            border: 2px solid transparent;
+        .input-area {
+            background: white;
+            padding: 12px 16px;
+            border-top: 1px solid var(--border-color);
+            padding-bottom: max(12px, env(safe-area-inset-bottom));
         }
 
-        .video-box.speaking {
-            border-color: #2563EB;
-            box-shadow: 0 0 12px rgba(37, 99, 235, 0.5);
-        }
-
-        .participant-avatar {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 48px;
-            background: #374151;
-        }
-
-        .participant-name {
-            position: absolute;
-            bottom: 8px;
-            left: 8px;
-            background: rgba(0, 0, 0, 0.6);
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 12px;
-            font-weight: 500;
-        }
-
-        /* Message Area (Toast) */
-        .mod-message {
-            position: absolute;
-            top: 70px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(37, 99, 235, 0.9);
-            padding: 8px 16px;
-            border-radius: 20px;
+        .turn-indicator {
+            background: #EFF6FF;
+            color: #1D4ED8;
+            padding: 8px 12px;
             font-size: 13px;
             font-weight: 600;
-            z-index: 10;
+            text-align: center;
+            border-bottom: 1px solid #DBEAFE;
         }
 
-        /* Controls Dock */
-        .control-dock {
-            padding: 24px 16px;
-            background: #1F2937;
-            border-radius: 24px 24px 0 0;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
+        .bubble {
+            max-width: 80%;
+            padding: 10px 14px;
+            border-radius: 12px;
+            font-size: 15px;
+            line-height: 1.5;
+            margin-bottom: 12px;
+            word-break: break-word;
         }
 
-        .talking-points {
-            background: #374151;
-            padding: 12px;
-            border-radius: 8px;
-            margin-bottom: 8px;
-        }
-
-        .point-label {
-            font-size: 12px;
-            color: #9CA3AF;
-            margin-bottom: 4px;
-        }
-
-        .point-text {
-            font-size: 14px;
-            line-height: 1.4;
-        }
-
-        .control-buttons {
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-        }
-
-        .ctrl-btn {
-            width: 56px;
-            height: 56px;
-            border-radius: 50%;
-            background: #374151;
-            border: none;
+        .bubble.me {
+            background: var(--text-main);
             color: white;
+            align-self: flex-end;
+            margin-left: auto;
+            border-bottom-right-radius: 2px;
+        }
+
+        .bubble.them {
+            background: white;
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            align-self: flex-start;
+            margin-right: auto;
+            border-top-left-radius: 2px;
+        }
+
+        .msg-meta {
+            font-size: 11px;
+            opacity: 0.7;
+            margin-bottom: 2px;
+            display: block;
+        }
+
+        .chat-input-wrapper {
+            display: flex;
+            gap: 8px;
+            align-items: flex-end;
+        }
+
+        .chat-input {
+            flex: 1;
+            background: #F3F4F6;
+            border: none;
+            border-radius: 20px;
+            padding: 12px 16px;
+            font-size: 15px;
+            max-height: 100px;
+            resize: none;
+        }
+
+        .chat-input:focus {
+            outline: 2px solid var(--primary);
+            background: white;
+        }
+
+        .send-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            border: none;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
             cursor: pointer;
-            transition: background 0.2s;
+            transition: transform 0.1s;
         }
 
-        .ctrl-btn.active {
-            background: white;
-            color: #111827;
+        .send-btn:active {
+            transform: scale(0.95);
         }
 
-        .ctrl-btn.danger {
-            background: #DC2626;
-        }
-
-        .exit-btn {
-            position: absolute;
-            top: 16px;
-            right: 16px;
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 20px;
+        .typing-indicator {
             font-size: 12px;
-            cursor: pointer;
+            color: var(--text-light);
+            font-style: italic;
+            margin-bottom: 8px;
         }
     </style>
 </head>
 
 <body>
 
-    <div class="room-container">
-        <!-- Header -->
+    <div class="chat-room-layout">
         <header class="room-header">
-            <div class="room-title-area">
-                <div class="room-status">
-                    <span style="width: 8px; height: 8px; background: #EF4444; border-radius: 50%;"></span>
-                    ON AIR
-                </div>
-                <div style="font-size: 14px; margin-top: 2px;">촉법소년 연령 하향</div>
+            <button onclick="location.href='view.html'"
+                style="border: none; background: none; font-size: 24px;">←</button>
+            <div style="text-align: center;">
+                <h2 style="font-size: 14px; font-weight: 700;">촉법소년 연령 하향</h2>
+                <span style="font-size: 11px; color: #DC2626;">남은 시간 03:20</span>
             </div>
-            <div class="room-timer">02:45</div>
-            <button class="exit-btn" onclick="location.href='index.html'">나가기</button>
+            <button style="border: none; background: none; font-size: 18px;">ℹ️</button>
         </header>
 
-        <!-- Moderator Message Toast -->
-        <div class="mod-message">
-            📢 2라운드: 반대 측 발언 시간입니다. (3분)
+        <div class="turn-indicator">
+            📢 <strong>반대(본인)</strong> 발언 순서입니다. (최대 200자)
         </div>
 
-        <!-- Video Grid -->
-        <div class="video-grid">
-            <!-- Opponent -->
-            <div class="video-box speaking">
-                <div class="participant-avatar">👨‍🏫</div>
-                <div class="participant-name">LogicKing (찬성)</div>
-                <div
-                    style="position: absolute; top: 8px; right: 8px; background: #2563EB; padding: 2px 6px; border-radius: 4px; font-size: 10px;">
-                    발언 중</div>
+        <div class="room-msgs" id="msg-container">
+            <div class="bubble them">
+                <span class="msg-meta">LogicKing (찬성)</span>
+                형사 미성년자 연령을 낮춘다고 해서 아이들이 전과자가 되는 것을 막을 수 있을까요? 오히려 범죄 학습의 기회만 주게 될 것입니다.
             </div>
 
-            <!-- Me -->
-            <div class="video-box">
-                <div class="participant-avatar" style="background: #111827;">📷</div>
-                <div class="participant-name">나 (반대)</div>
+            <div class="bubble me">
+                <span class="msg-meta">나 (반대)</span>
+                하지만 현재의 처벌 수위로는 소년범죄의 잔혹성을 따라가지 못하고 있습니다. 피해자들의 억울함은 어떻게 해결합니까?
             </div>
 
-            <!-- Panel 3 -->
-            <div class="video-box">
-                <div class="participant-avatar">👩‍⚖️</div>
-                <div class="participant-name">SeriousUser (찬성)</div>
+            <div class="bubble them">
+                <span class="msg-meta">SeriousUser (찬성)</span>
+                교정 시설의 확충과 교육 프로그램 개선이 먼저입니다. 처벌 강화는 '언발에 오줌누기' 식 처방일 뿐입니다. 재범률 통계가 이를 증명합니다.
             </div>
 
-            <!-- Panel 4 -->
-            <div class="video-box">
-                <div class="participant-avatar">🧑‍💼</div>
-                <div class="participant-name">Debater1 (반대)</div>
-            </div>
+            <div class="typing-indicator">LogicKing 님이 입력 중...</div>
         </div>
 
-        <!-- Bottom Controls -->
-        <div class="control-dock">
-            <!-- Helper Text -->
-            <div class="talking-points">
-                <div class="point-label">💡 다음 발언 준비</div>
-                <div class="point-text">
-                    상대방의 "처벌 강화 효과" 주장에 대해, 실제 통계 자료(재범률)를 인용하여 반박하세요.
-                </div>
-            </div>
-
-            <div class="control-buttons">
-                <button class="ctrl-btn active">
-                    <!-- Mic -->
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
-                        <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
-                        <line x1="12" y1="19" x2="12" y2="23"></line>
-                        <line x1="8" y1="23" x2="16" y2="23"></line>
-                    </svg>
-                </button>
-                <button class="ctrl-btn active">
-                    <!-- Video -->
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <polygon points="23 7 16 12 23 17 23 7"></polygon>
-                        <rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect>
-                    </svg>
-                </button>
-                <button class="ctrl-btn" style="background: #F59E0B;">
-                    <!-- Hand -->
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M18 11V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v0"></path>
-                        <path d="M14 10V4a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v2"></path>
-                        <path d="M10 10.5V6a2 2 0 0 0-2-2v0a2 2 0 0 0-2 2v8"></path>
-                        <path
-                            d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15">
-                        </path>
-                    </svg>
-                </button>
-                <button class="ctrl-btn danger" onclick="location.href='index.html'">
-                    <!-- End Call -->
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                        style="transform: rotate(135deg);">
-                        <path
-                            d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z">
-                        </path>
+        <div class="input-area">
+            <div class="chat-input-wrapper">
+                <textarea class="chat-input" rows="1" placeholder="반박 내용을 입력하세요..."></textarea>
+                <button class="send-btn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="22" y1="2" x2="11" y2="13"></line>
+                        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
                     </svg>
                 </button>
             </div>

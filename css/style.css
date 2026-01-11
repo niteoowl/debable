@@ -540,29 +540,67 @@ body {
     }
 }
 
-/* Page Transitions */
-main {
-    transition: opacity 0.2s ease-out, transform 0.2s ease-out;
-}
+/* Animation Handling */
 
-.fade-out {
-    opacity: 0;
-    transform: translateY(-10px);
-}
+/* Desktop: No Animation */
+@media (min-width: 769px) {
 
-.fade-in {
-    animation: fadeInUp 0.3s ease-out forwards;
-}
-
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
+    main,
+    .app-container {
+        transition: none !important;
+        animation: none !important;
     }
 
-    to {
-        opacity: 1;
-        transform: translateY(0);
+    .fade-in,
+    .fade-out,
+    .slide-in-right,
+    .slide-in-left {
+        animation: none !important;
+        transition: none !important;
+        transform: none !important;
+        opacity: 1 !important;
+    }
+}
+
+/* Mobile: Slide Animations */
+@media (max-width: 768px) {
+    main {
+        width: 100%;
+        overflow-x: hidden;
+    }
+
+    /* Keyframes for sliding content IN from Right (Next page) */
+    @keyframes slideInRight {
+        from {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+
+    /* Keyframes for sliding content IN from Left (Prev page) */
+    @keyframes slideInLeft {
+        from {
+            transform: translateX(-100%);
+            opacity: 0;
+        }
+
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+
+    .slide-in-right {
+        animation: slideInRight 0.3s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+    }
+
+    .slide-in-left {
+        animation: slideInLeft 0.3s cubic-bezier(0.25, 1, 0.5, 1) forwards;
     }
 }
 
@@ -574,7 +612,7 @@ main {
 
     50% {
         opacity: 0.5;
-        transform: scale(1.2);
+        transform: scale(1.1);
     }
 
     100% {
