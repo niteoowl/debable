@@ -1,24 +1,42 @@
-// Page order for directional navigation
-const PAGE_ORDER = ['index.html', 'explore.html', 'community.html', 'my.html', 'view.html', 'create.html'];
+// Page routing configuration
+const PAGES = {
+    '': 'index.html',
+    'index': 'index.html',
+    'explore': 'explore.html',
+    'community': 'community.html',
+    'my': 'my.html',
+    'view': 'view.html',
+    'create': 'create.html'
+};
 
-// URL normalization - handle both /page and /page.html
-function normalizePageName(url) {
-    let page = url.split('/').pop() || 'index.html';
-    // Remove query string and hash
-    page = page.split('?')[0].split('#')[0];
-    // Add .html if missing
-    if (!page.includes('.html') && page !== '') {
-        page = page + '.html';
-    }
-    // Default to index.html
-    if (page === '' || page === '.html') {
-        page = 'index.html';
+const PAGE_ORDER = ['index', 'explore', 'community', 'my', 'view', 'create'];
+
+// Get clean page name from URL
+function getCleanPageName(url) {
+    let path = url.split('?')[0].split('#')[0];
+    let page = path.split('/').pop() || '';
+    // Remove .html extension if present
+    page = page.replace('.html', '');
+    // Default to index
+    if (page === '' || !PAGES[page]) {
+        page = 'index';
     }
     return page;
 }
 
+// Get file path from clean page name
+function getFilePath(pageName) {
+    return PAGES[pageName] || 'index.html';
+}
+
+// Get clean URL for navigation
+function getCleanUrl(pageName) {
+    if (pageName === 'index') return './';
+    return './' + pageName;
+}
+
 function getPageIndex(url) {
-    const page = normalizePageName(url);
+    const page = getCleanPageName(url);
     const idx = PAGE_ORDER.indexOf(page);
     return idx === -1 ? 0 : idx;
 }
@@ -58,16 +76,18 @@ const ICONS = {
     }
 };
 
-async function loadPage(url, direction = 0) {
+async function loadPage(pageName, direction = 0) {
     try {
+        const filePath = getFilePath(pageName);
         const currentMain = document.querySelector('main');
+
         if (currentMain && isMobile() && direction !== 0) {
             const exitClass = direction > 0 ? 'slide-out-left' : 'slide-out-right';
             currentMain.classList.add(exitClass);
             await new Promise(resolve => setTimeout(resolve, 150));
         }
 
-        const response = await fetch(url);
+        const response = await fetch(filePath);
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         const html = await response.text();
 
@@ -83,8 +103,20 @@ async function loadPage(url, direction = 0) {
 
             document.title = doc.title;
 
-            // Update navigation active states with proper icons
-            updateNavActiveStates(url);
+            // Inject page-specific styles
+            const newStyles = doc.querySelectorAll('head style');
+            const existingPageStyle = document.getElementById('page-specific-style');
+            if (existingPageStyle) existingPageStyle.remove();
+
+            if (newStyles.length > 0) {
+                const styleEl = document.createElement('style');
+                styleEl.id = 'page-specific-style';
+                newStyles.forEach(s => styleEl.textContent += s.textContent);
+                document.head.appendChild(styleEl);
+            }
+
+            // Update navigation active states
+            updateNavActiveStates(pageName);
 
             // Update right sidebar content from new page
             const newRightSidebar = doc.querySelector('.right-sidebar');
@@ -92,6 +124,18 @@ async function loadPage(url, direction = 0) {
             if (newRightSidebar && currentRightSidebar) {
                 currentRightSidebar.innerHTML = newRightSidebar.innerHTML;
             }
+
+            // Execute inline scripts from new page
+            const newScripts = doc.querySelectorAll('body script:not([src])');
+            newScripts.forEach(script => {
+                if (!script.src) {
+                    try {
+                        eval(script.textContent);
+                    } catch (e) {
+                        console.warn('Script execution error:', e);
+                    }
+                }
+            });
 
             Utilsly.initCurrentTool();
 
@@ -104,33 +148,42 @@ async function loadPage(url, direction = 0) {
 
             window.scrollTo(0, 0);
         } else {
-            window.location.href = url;
+            window.location.href = filePath;
         }
     } catch (error) {
         console.error('Failed to load page:', error);
-        window.location.href = url;
+        window.location.href = getFilePath(pageName);
     }
 }
 
-function MapsTo(url) {
-    if (window.location.href === url) return;
+// Navigate to page with clean URL
+function MapsTo(input) {
+    // Extract clean page name from various inputs
+    let pageName = input.replace('.html', '').replace('./', '').replace('/', '');
+    if (pageName === '' || pageName === 'index') pageName = 'index';
 
-    const targetIndex = getPageIndex(url);
+    const cleanUrl = getCleanUrl(pageName);
+    const currentPage = getCleanPageName(window.location.pathname);
+
+    if (currentPage === pageName) return;
+
+    const targetIndex = PAGE_ORDER.indexOf(pageName);
     const direction = targetIndex - currentPageIndex;
-    currentPageIndex = targetIndex;
+    currentPageIndex = targetIndex >= 0 ? targetIndex : 0;
 
-    history.pushState({ pageIndex: targetIndex }, '', url);
-    loadPage(url, direction);
+    history.pushState({ page: pageName }, '', cleanUrl);
+    loadPage(pageName, direction);
 }
 
-function updateNavActiveStates(url) {
-    const page = normalizePageName(url);
+function updateNavActiveStates(pageName) {
+    const navPages = ['index', 'explore', 'community', 'my'];
 
     // Update desktop nav
     document.querySelectorAll('.nav-item').forEach(item => {
-        const href = item.getAttribute('href');
-        const iconKey = getIconKey(href);
-        const isActive = href === page;
+        const href = item.getAttribute('href') || '';
+        const itemPage = getCleanPageName(href);
+        const isActive = itemPage === pageName;
+        const iconKey = itemPage === 'index' ? 'home' : itemPage;
 
         item.classList.toggle('active', isActive);
         const svgContainer = item.querySelector('.nav-icon');
@@ -141,9 +194,10 @@ function updateNavActiveStates(url) {
 
     // Update mobile nav
     document.querySelectorAll('.mobile-nav-item').forEach(item => {
-        const href = item.getAttribute('href');
-        const iconKey = getIconKey(href);
-        const isActive = href === page;
+        const href = item.getAttribute('href') || '';
+        const itemPage = getCleanPageName(href);
+        const isActive = itemPage === pageName;
+        const iconKey = itemPage === 'index' ? 'home' : itemPage;
 
         item.classList.toggle('active', isActive);
         const svgContainer = item.querySelector('.mobile-nav-icon');
@@ -154,53 +208,37 @@ function updateNavActiveStates(url) {
 }
 
 function getIconKey(href) {
-    if (href.includes('index')) return 'home';
-    if (href.includes('explore')) return 'explore';
-    if (href.includes('community')) return 'community';
-    if (href.includes('my')) return 'my';
-    return 'home';
+    const page = getCleanPageName(href);
+    if (page === 'index') return 'home';
+    return page;
 }
 
 window.addEventListener('popstate', (e) => {
-    const targetIndex = e.state?.pageIndex ?? getPageIndex(window.location.pathname);
+    const pageName = e.state?.page || getCleanPageName(window.location.pathname);
+    const targetIndex = PAGE_ORDER.indexOf(pageName);
     const direction = targetIndex - currentPageIndex;
-    currentPageIndex = targetIndex;
-    loadPage(window.location.pathname, direction);
+    currentPageIndex = targetIndex >= 0 ? targetIndex : 0;
+    loadPage(pageName, direction);
 });
 
 document.addEventListener('DOMContentLoaded', () => {
-    history.replaceState({ pageIndex: currentPageIndex }, '', window.location.href);
+    const pageName = getCleanPageName(window.location.pathname);
+    history.replaceState({ page: pageName }, '', getCleanUrl(pageName));
+    currentPageIndex = PAGE_ORDER.indexOf(pageName);
 
     document.body.addEventListener('click', (e) => {
         const link = e.target.closest('a');
         if (link && link.href) {
-            const url = new URL(link.href);
+            const url = new URL(link.href, window.location.origin);
             const isInternal = url.origin === window.location.origin;
-            const isHtml = url.pathname.endsWith('.html') || url.pathname.endsWith('/');
+            const targetPage = getCleanPageName(url.pathname);
 
-            if (isInternal && isHtml) {
+            if (isInternal && PAGES[targetPage]) {
                 e.preventDefault();
-                MapsTo(link.href);
-            }
-        }
-
-        const clickTarget = e.target.closest('[onclick*="location.href"]');
-        if (clickTarget) {
-            const onclickAttr = clickTarget.getAttribute('onclick');
-            const match = onclickAttr.match(/location\.href=['"]([^'"]+)['"]/);
-            if (match) {
-                const url = match[1];
-                if (!url.startsWith('http') && url.endsWith('.html')) {
-                    e.preventDefault();
-                    e.stopImmediatePropagation();
-                    MapsTo(url);
-                }
+                MapsTo(targetPage);
             }
         }
     });
-
-    const path = window.location.pathname;
-    const page = normalizePageName(path);
 
     // Inject font
     if (!document.querySelector('link[href*="pretendard"]')) {
@@ -217,15 +255,15 @@ document.addEventListener('DOMContentLoaded', () => {
         headerTarget.innerHTML = `
             <header class="app-header">
                 <div class="header-inner">
-                    <div class="logo-area" onclick="MapsTo('index.html')" style="cursor: pointer;">Debable</div>
+                    <div class="logo-area" onclick="MapsTo('index')" style="cursor: pointer;">Debable</div>
                     <div style="display: flex; gap: 12px; align-items: center;">
-                        <button onclick="MapsTo('create.html')" style="width: 36px; height: 36px; border-radius: 50%; background: var(--text-main); color: white; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer;">
+                        <button onclick="MapsTo('create')" style="width: 36px; height: 36px; border-radius: 50%; background: var(--text-main); color: white; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer;">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <line x1="12" y1="5" x2="12" y2="19"></line>
                                 <line x1="5" y1="12" x2="19" y2="12"></line>
                             </svg>
                         </button>
-                        <div style="width: 36px; height: 36px; border-radius: 50%; background: #E5E7EB; overflow: hidden; cursor: pointer;" onclick="MapsTo('my.html')"></div>
+                        <div style="width: 36px; height: 36px; border-radius: 50%; background: #E5E7EB; overflow: hidden; cursor: pointer;" onclick="MapsTo('my')"></div>
                     </div>
                 </div>
             </header>
@@ -235,25 +273,25 @@ document.addEventListener('DOMContentLoaded', () => {
     // Inject Left Sidebar
     const sidebarTarget = document.getElementById('left-sidebar-target');
     if (sidebarTarget) {
-        const isActive = (target) => page === target;
+        const isActive = (target) => pageName === target;
 
         sidebarTarget.innerHTML = `
             <div class="left-sidebar-placeholder"></div>
             <nav class="left-sidebar">
-                <a href="index.html" class="nav-item ${isActive('index.html') ? 'active' : ''}">
-                    <span class="nav-icon">${isActive('index.html') ? ICONS.home.active : ICONS.home.inactive}</span>
+                <a href="index" class="nav-item ${isActive('index') ? 'active' : ''}">
+                    <span class="nav-icon">${isActive('index') ? ICONS.home.active : ICONS.home.inactive}</span>
                     홈
                 </a>
-                <a href="explore.html" class="nav-item ${isActive('explore.html') ? 'active' : ''}">
-                    <span class="nav-icon">${isActive('explore.html') ? ICONS.explore.active : ICONS.explore.inactive}</span>
+                <a href="explore" class="nav-item ${isActive('explore') ? 'active' : ''}">
+                    <span class="nav-icon">${isActive('explore') ? ICONS.explore.active : ICONS.explore.inactive}</span>
                     탐색
                 </a>
-                <a href="community.html" class="nav-item ${isActive('community.html') ? 'active' : ''}">
-                    <span class="nav-icon">${isActive('community.html') ? ICONS.community.active : ICONS.community.inactive}</span>
+                <a href="community" class="nav-item ${isActive('community') ? 'active' : ''}">
+                    <span class="nav-icon">${isActive('community') ? ICONS.community.active : ICONS.community.inactive}</span>
                     커뮤니티
                 </a>
-                <a href="my.html" class="nav-item ${isActive('my.html') ? 'active' : ''}">
-                    <span class="nav-icon">${isActive('my.html') ? ICONS.my.active : ICONS.my.inactive}</span>
+                <a href="my" class="nav-item ${isActive('my') ? 'active' : ''}">
+                    <span class="nav-icon">${isActive('my') ? ICONS.my.active : ICONS.my.inactive}</span>
                     MY
                 </a>
             </nav>
@@ -263,24 +301,24 @@ document.addEventListener('DOMContentLoaded', () => {
     // Inject Mobile Nav
     const mobileNavTarget = document.getElementById('mobile-nav-target');
     if (mobileNavTarget) {
-        const isActive = (target) => page === target;
+        const isActive = (target) => pageName === target;
 
         mobileNavTarget.innerHTML = `
             <nav class="mobile-nav">
-                <a href="index.html" class="mobile-nav-item ${isActive('index.html') ? 'active' : ''}">
-                    <span class="mobile-nav-icon">${isActive('index.html') ? ICONS.home.active : ICONS.home.inactive}</span>
+                <a href="index" class="mobile-nav-item ${isActive('index') ? 'active' : ''}">
+                    <span class="mobile-nav-icon">${isActive('index') ? ICONS.home.active : ICONS.home.inactive}</span>
                     <span>홈</span>
                 </a>
-                <a href="explore.html" class="mobile-nav-item ${isActive('explore.html') ? 'active' : ''}">
-                    <span class="mobile-nav-icon">${isActive('explore.html') ? ICONS.explore.active : ICONS.explore.inactive}</span>
+                <a href="explore" class="mobile-nav-item ${isActive('explore') ? 'active' : ''}">
+                    <span class="mobile-nav-icon">${isActive('explore') ? ICONS.explore.active : ICONS.explore.inactive}</span>
                     <span>탐색</span>
                 </a>
-                <a href="community.html" class="mobile-nav-item ${isActive('community.html') ? 'active' : ''}">
-                    <span class="mobile-nav-icon">${isActive('community.html') ? ICONS.community.active : ICONS.community.inactive}</span>
+                <a href="community" class="mobile-nav-item ${isActive('community') ? 'active' : ''}">
+                    <span class="mobile-nav-icon">${isActive('community') ? ICONS.community.active : ICONS.community.inactive}</span>
                     <span>커뮤니티</span>
                 </a>
-                <a href="my.html" class="mobile-nav-item ${isActive('my.html') ? 'active' : ''}">
-                    <span class="mobile-nav-icon">${isActive('my.html') ? ICONS.my.active : ICONS.my.inactive}</span>
+                <a href="my" class="mobile-nav-item ${isActive('my') ? 'active' : ''}">
+                    <span class="mobile-nav-icon">${isActive('my') ? ICONS.my.active : ICONS.my.inactive}</span>
                     <span>MY</span>
                 </a>
             </nav>
