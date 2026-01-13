@@ -25,13 +25,13 @@
 
             <!-- Category Toggle -->
             <div class="category-toggle">
-                <button class="toggle-btn active" onclick="switchFeed('politics')">정치/시사</button>
-                <button class="toggle-btn" onclick="switchFeed('daily')">일상/잡담</button>
+                <button class="toggle-btn active" id="btn-politics">정치/시사</button>
+                <button class="toggle-btn" id="btn-daily">일상/잡담</button>
             </div>
 
             <!-- Politics Feed (Visible by default) -->
             <div id="feed-politics">
-                <h2 style="font-size: 18px; font-weight: 800; margin-bottom: 16px;">🔥 실시간 핫 토론 (정치)</h2>
+                <h2 style="font-size: 18px; font-weight: 800; margin-bottom: 16px;">🔥 실시간 핫 토론</h2>
 
                 <!-- Live Horizontal Scroll -->
                 <div class="h-scroll-section">
@@ -70,11 +70,29 @@
                             <span style="color: var(--primary); font-weight: 600;">투표 41%</span>
                         </div>
                     </div>
+
+                    <!-- Card 3 -->
+                    <div class="h-card" onclick="MapsTo('view')">
+                        <div style="margin-bottom: 8px;">
+                            <span class="status-badge live">LIVE</span>
+                            <span style="font-size: 12px; color: var(--text-light); margin-left: 4px;">• 국제</span>
+                        </div>
+                        <h3 class="h-card-title">한미동맹 vs 자주국방, 어느 쪽이 우선인가?</h3>
+                        <div style="font-size: 13px; color: var(--text-sub); margin-bottom: 12px;">
+                            1라운드 입론 진행 중<br>
+                            뜨거운 논쟁 예상
+                        </div>
+                        <div
+                            style="display: flex; align-items: center; justify-content: space-between; font-size: 12px; color: var(--text-light);">
+                            <span>👤 2.1k명 참관</span>
+                            <span style="color: #DC2626; font-weight: 600;">투표 52%</span>
+                        </div>
+                    </div>
                 </div>
 
-                <h2 style="font-size: 18px; font-weight: 800; margin: 32px 0 16px;">추천 토론</h2>
+                <h2 style="font-size: 18px; font-weight: 800; margin: 32px 0 16px;">📢 모집 중인 토론</h2>
 
-                <!-- Feed Item 2 -->
+                <!-- Feed Item 1 -->
                 <div class="feed-item" onclick="MapsTo('view')">
                     <div class="feed-header">
                         <span class="status-badge pro">모집중</span>
@@ -90,6 +108,81 @@
                         <span>대기자 45명</span>
                     </div>
                 </div>
+
+                <!-- Feed Item 2 -->
+                <div class="feed-item" onclick="MapsTo('view')">
+                    <div class="feed-header">
+                        <span class="status-badge pro">모집중</span>
+                        <span>• 정치/사회</span>
+                        <span>• 1:1 토론</span>
+                    </div>
+                    <h3 class="feed-title">사형제 폐지, 인권과 응보 사이에서</h3>
+                    <p class="feed-desc">
+                        극악범죄에 대한 응보적 정의와 생명권의 절대성 사이의 논쟁. 찬성 측 패널을 찾고 있습니다.
+                    </p>
+                    <div class="feed-footer">
+                        <span>찬성 측 패널 모집</span>
+                        <span>대기자 89명</span>
+                    </div>
+                </div>
+
+                <!-- Feed Item 3 -->
+                <div class="feed-item" onclick="MapsTo('view')">
+                    <div class="feed-header">
+                        <span class="status-badge pro">모집중</span>
+                        <span>• 경제</span>
+                        <span>• 3:3 토론</span>
+                    </div>
+                    <h3 class="feed-title">기본소득제 도입, 경제에 득인가 실인가?</h3>
+                    <p class="feed-desc">
+                        무조건적 기본소득이 경제 활성화에 기여할 것인가, 재정적 부담과 근로 의욕 저하를 초래할 것인가에 대한 팀 토론.
+                    </p>
+                    <div class="feed-footer">
+                        <span>양측 패널 모집 중</span>
+                        <span>대기자 156명</span>
+                    </div>
+                </div>
+
+                <h2 style="font-size: 18px; font-weight: 800; margin: 32px 0 16px;">🏆 명예의 전당</h2>
+
+                <!-- Feed Item 4 -->
+                <div class="feed-item" onclick="MapsTo('view')">
+                    <div class="feed-header">
+                        <span class="status-badge" style="background: #FEF3C7; color: #D97706;">HOT</span>
+                        <span>• 정치/사회</span>
+                    </div>
+                    <h3 class="feed-title">국민연금 개혁안, 어느 방향이 옳은가?</h3>
+                    <div class="feed-footer">
+                        <span style="font-weight: 600; color: var(--primary);">찬성 승리 (68%)</span>
+                        <span>조회수 89,400회</span>
+                    </div>
+                </div>
+
+                <!-- Feed Item 5 -->
+                <div class="feed-item" onclick="MapsTo('view')">
+                    <div class="feed-header">
+                        <span class="status-badge" style="background: #F3F4F6;">종료</span>
+                        <span>• 국제정치</span>
+                    </div>
+                    <h3 class="feed-title">나토 확대, 세계 안보에 기여하는가?</h3>
+                    <div class="feed-footer">
+                        <span>반대 우세 (54%)</span>
+                        <span>조회수 67,200회</span>
+                    </div>
+                </div>
+
+                <!-- Feed Item 6 -->
+                <div class="feed-item" onclick="MapsTo('view')">
+                    <div class="feed-header">
+                        <span class="status-badge" style="background: #F3F4F6;">종료</span>
+                        <span>• 사회</span>
+                    </div>
+                    <h3 class="feed-title">의대 정원 확대, 의료 질 향상에 도움이 되는가?</h3>
+                    <div class="feed-footer">
+                        <span>찬성 승리 (61%)</span>
+                        <span>조회수 124,500회</span>
+                    </div>
+                </div>
             </div>
 
             <!-- Daily Feed (Hidden by default) -->
@@ -97,7 +190,7 @@
                 <h2 style="font-size: 18px; font-weight: 800; margin-bottom: 16px;">💬 실시간 가벼운 토론</h2>
 
                 <div class="h-scroll-section">
-                    <!-- Card 3 -->
+                    <!-- Card 1 -->
                     <div class="h-card" onclick="MapsTo('view')">
                         <div style="margin-bottom: 8px;">
                             <span class="status-badge live">LIVE</span>
@@ -114,11 +207,29 @@
                             <span style="color: #DC2626; font-weight: 600;">투표 88%</span>
                         </div>
                     </div>
+
+                    <!-- Card 2 -->
+                    <div class="h-card" onclick="MapsTo('view')">
+                        <div style="margin-bottom: 8px;">
+                            <span class="status-badge live">LIVE</span>
+                            <span style="font-size: 12px; color: var(--text-light); margin-left: 4px;">• 게임</span>
+                        </div>
+                        <h3 class="h-card-title">PC게임 vs 콘솔게임, 진정한 게이머는?</h3>
+                        <div style="font-size: 13px; color: var(--text-sub); margin-bottom: 12px;">
+                            2라운드 교차 검증 중<br>
+                            예상외 논쟁 과열
+                        </div>
+                        <div
+                            style="display: flex; align-items: center; justify-content: space-between; font-size: 12px; color: var(--text-light);">
+                            <span>👤 1.8k명 참관</span>
+                            <span style="color: var(--primary); font-weight: 600;">투표 55%</span>
+                        </div>
+                    </div>
                 </div>
 
                 <h2 style="font-size: 18px; font-weight: 800; margin: 32px 0 16px;">🔥 핫한 주제</h2>
 
-                <!-- Feed Item 3 -->
+                <!-- Feed Item 1 -->
                 <div class="feed-item" onclick="MapsTo('view')">
                     <div class="feed-header">
                         <span class="status-badge">자유토론</span>
@@ -134,7 +245,23 @@
                     </div>
                 </div>
 
-                <!-- Feed Item 4 -->
+                <!-- Feed Item 2 -->
+                <div class="feed-item" onclick="MapsTo('view')">
+                    <div class="feed-header">
+                        <span class="status-badge pro">모집중</span>
+                        <span>• 음식</span>
+                    </div>
+                    <h3 class="feed-title">부먹 vs 찍먹, 탕수육의 정석은?</h3>
+                    <p class="feed-desc">
+                        바삭함을 살리는 찍먹파와 소스의 맛이 스며든 부먹파의 영원한 논쟁.
+                    </p>
+                    <div class="feed-footer">
+                        <span>양측 패널 모집 중</span>
+                        <span>대기자 234명</span>
+                    </div>
+                </div>
+
+                <!-- Feed Item 3 -->
                 <div class="feed-item" onclick="MapsTo('view')">
                     <div class="feed-header">
                         <span class="status-badge" style="background: #F3F4F6;">종료</span>
@@ -144,6 +271,51 @@
                     <div class="feed-footer">
                         <span>최종 결과: 반대 승리</span>
                         <span>조회수 45,200회</span>
+                    </div>
+                </div>
+
+                <!-- Feed Item 4 -->
+                <div class="feed-item" onclick="MapsTo('view')">
+                    <div class="feed-header">
+                        <span class="status-badge">자유토론</span>
+                        <span>• 라이프</span>
+                    </div>
+                    <h3 class="feed-title">아침형 인간 vs 저녁형 인간, 누가 더 성공하는가?</h3>
+                    <p class="feed-desc">
+                        새벽 기상이 성공의 비결인가, 아니면 자신의 리듬을 따르는 것이 중요한가?
+                    </p>
+                    <div class="feed-footer">
+                        <span style="font-weight: 600; color: var(--primary);">찬성 우세 (58%)</span>
+                        <span>댓글 892개</span>
+                    </div>
+                </div>
+
+                <!-- Feed Item 5 -->
+                <div class="feed-item" onclick="MapsTo('view')">
+                    <div class="feed-header">
+                        <span class="status-badge" style="background: #FEF3C7; color: #D97706;">HOT</span>
+                        <span>• 여행</span>
+                    </div>
+                    <h3 class="feed-title">해외여행 vs 국내여행, 가성비 최강은?</h3>
+                    <div class="feed-footer">
+                        <span>해외여행 승리 (63%)</span>
+                        <span>조회수 78,300회</span>
+                    </div>
+                </div>
+
+                <!-- Feed Item 6 -->
+                <div class="feed-item" onclick="MapsTo('view')">
+                    <div class="feed-header">
+                        <span class="status-badge pro">모집중</span>
+                        <span>• 반려동물</span>
+                    </div>
+                    <h3 class="feed-title">강아지 vs 고양이, 최고의 반려동물은?</h3>
+                    <p class="feed-desc">
+                        충성스러운 강아지파와 도도한 매력의 고양이파, 영원한 라이벌 대결!
+                    </p>
+                    <div class="feed-footer">
+                        <span>양측 패널 모집 중</span>
+                        <span>대기자 312명</span>
                     </div>
                 </div>
             </div>
@@ -211,25 +383,37 @@
     <div id="mobile-nav-target"></div>
 
     <script src="js/layout.js"></script>
-    <!-- Clean Layout JS (Just for link active logic if needed, but manual is fine for this demo) -->
     <script>
-        // Use js/layout.js which is included at the end
-        function switchFeed(type) {
-            const politicsFeed = document.getElementById('feed-politics');
-            const dailyFeed = document.getElementById('feed-daily');
-            const btns = document.querySelectorAll('.toggle-btn');
+        // Category toggle - inline for SPA compatibility
+        document.addEventListener('DOMContentLoaded', initToggle);
+        function initToggle() {
+            const btnPolitics = document.getElementById('btn-politics');
+            const btnDaily = document.getElementById('btn-daily');
+            const feedPolitics = document.getElementById('feed-politics');
+            const feedDaily = document.getElementById('feed-daily');
 
-            if (type === 'politics') {
-                politicsFeed.style.display = 'block';
-                dailyFeed.style.display = 'none';
-                btns[0].classList.add('active');
-                btns[1].classList.remove('active');
-            } else {
-                politicsFeed.style.display = 'none';
-                dailyFeed.style.display = 'block';
-                btns[0].classList.remove('active');
-                btns[1].classList.add('active');
+            if (btnPolitics && btnDaily) {
+                btnPolitics.onclick = function () {
+                    feedPolitics.style.display = 'block';
+                    feedDaily.style.display = 'none';
+                    btnPolitics.classList.add('active');
+                    btnDaily.classList.remove('active');
+                };
+                btnDaily.onclick = function () {
+                    feedPolitics.style.display = 'none';
+                    feedDaily.style.display = 'block';
+                    btnPolitics.classList.remove('active');
+                    btnDaily.classList.add('active');
+                };
             }
+        }
+        // Re-init on page load via SPA
+        if (typeof Utilsly !== 'undefined') {
+            const origInit = Utilsly.initCurrentTool;
+            Utilsly.initCurrentTool = function () {
+                origInit();
+                initToggle();
+            };
         }
     </script>
 </body>
