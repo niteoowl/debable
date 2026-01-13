@@ -1,8 +1,24 @@
 // Page order for directional navigation
-const PAGE_ORDER = ['index.html', 'explore.html', 'community.html', 'my.html'];
+const PAGE_ORDER = ['index.html', 'explore.html', 'community.html', 'my.html', 'view.html', 'create.html'];
+
+// URL normalization - handle both /page and /page.html
+function normalizePageName(url) {
+    let page = url.split('/').pop() || 'index.html';
+    // Remove query string and hash
+    page = page.split('?')[0].split('#')[0];
+    // Add .html if missing
+    if (!page.includes('.html') && page !== '') {
+        page = page + '.html';
+    }
+    // Default to index.html
+    if (page === '' || page === '.html') {
+        page = 'index.html';
+    }
+    return page;
+}
 
 function getPageIndex(url) {
-    const page = url.split('/').pop() || 'index.html';
+    const page = normalizePageName(url);
     const idx = PAGE_ORDER.indexOf(page);
     return idx === -1 ? 0 : idx;
 }
@@ -108,7 +124,7 @@ function MapsTo(url) {
 }
 
 function updateNavActiveStates(url) {
-    const page = url.split('/').pop() || 'index.html';
+    const page = normalizePageName(url);
 
     // Update desktop nav
     document.querySelectorAll('.nav-item').forEach(item => {
@@ -184,7 +200,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     const path = window.location.pathname;
-    const page = path.split('/').pop() || 'index.html';
+    const page = normalizePageName(path);
 
     // Inject font
     if (!document.querySelector('link[href*="pretendard"]')) {
