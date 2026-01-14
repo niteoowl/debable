@@ -242,6 +242,16 @@ body {
     display: none;
 }
 
+/* Edge Fade Effect */
+.h-scroll-section {
+    mask-image: linear-gradient(to right, transparent, black 16px, black calc(100% - 16px), transparent);
+    -webkit-mask-image: linear-gradient(to right, transparent, black 16px, black calc(100% - 16px), transparent);
+    padding: 0 16px;
+    /* Offset for fade */
+    margin: 0 -16px 8px;
+    /* Compensate padding */
+}
+
 .h-card {
     min-width: 260px;
     width: 260px;
@@ -273,7 +283,7 @@ body {
 /* Category Toggle */
 .category-toggle {
     display: flex;
-    gap: 24px;
+    gap: 12px;
     margin-bottom: 32px;
 }
 
@@ -369,6 +379,19 @@ body {
     background: transparent;
     font-size: 16px;
     transition: border-color 0.2s;
+}
+
+/* Search Input Rounded Style (New Request) */
+.search-input.rounded-style {
+    background: var(--bg-surface);
+    border: none;
+    border-radius: 99px;
+    padding: 0 44px 0 16px;
+    height: 48px;
+}
+
+.search-input.rounded-style:focus {
+    box-shadow: 0 0 0 2px var(--primary-bg);
 }
 
 .search-input::placeholder {
@@ -496,7 +519,7 @@ body {
 
     /* Larger toggle buttons on mobile */
     .toggle-btn {
-        font-size: 22px;
+        font-size: 26px;
     }
 
     h1 {
